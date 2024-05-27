@@ -32,13 +32,13 @@ function mousePressed() {
 function draw() {
   background('#ffcccc');
   fill("#000066");
-  rotateDeg.value = accelerationX;
+  rotateDeg.value = rotationX;
 
   textAlign(CENTER, CENTER);
   text(clickCount.value, width/2, height/2);
-  text(rotateDeg.value, width/2, 100);
+  text(radians(rotateDeg.value).value, width/2, 100);
 
-  shared.x += rotateDeg.value;
+  shared.x += radians(rotateDeg.value);
 
   ellipse(shared.x, shared.y, 100, 100);
 }
