@@ -32,7 +32,7 @@ function mousePressed() {
 function draw() {
   background('#ffcccc');
   fill("#000066");
-  rotateDeg.value = rotationX;
+  rotateDeg.value = accelerationX;
 
   textAlign(CENTER, CENTER);
   text(clickCount.value, width/2, height/2);
