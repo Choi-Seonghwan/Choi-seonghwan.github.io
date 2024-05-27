@@ -7,7 +7,7 @@ function preload() {
 		"hello_party"
 	);
   shared = partyLoadShared("shared", { x: 100, y: 100 });
-  rotateIs = partyLoadShared("rotateCheck", 0);
+  rotateIs = partyLoadShared("rotateCheck", {deg: 0});
 }
 
 function setup() {
@@ -21,11 +21,12 @@ function mousePressed() {
 }
 
 function draw() {
-  rotateIs.set(rotationX);
-  background(radians(rotationX));
+  rotateIs = {deg: rotationX}
+  background(radians(rotateIs));
 
   fill(0);
-  text(rotateIs, width/2, height/2)
+  console.log(rotationX);
+  console.log(rotateIs);
 
   fill("#000066");
 
