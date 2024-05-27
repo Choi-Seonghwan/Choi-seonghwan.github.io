@@ -1,4 +1,5 @@
 let shared;
+let rotateIs;
 
 function preload() {
 	partyConnect(
@@ -6,6 +7,7 @@ function preload() {
 		"hello_party"
 	);
   shared = partyLoadShared("shared", { x: 100, y: 100 });
+  rotateIs = partyLoadShared("rotateCheck", 0);
 }
 
 function setup() {
@@ -19,7 +21,9 @@ function mousePressed() {
 }
 
 function draw() {
-  background("#ffcccc");
+  rotateIs.set(rotationX);
+  background(radians(rotationX));
+
   fill("#000066");
 
   ellipse(shared.x, shared.y, 100, 100);
