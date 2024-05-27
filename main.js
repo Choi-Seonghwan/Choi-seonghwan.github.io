@@ -39,6 +39,13 @@ function draw() {
   text(radians(rotateDeg.value), width/2, 100);
 
   shared.x += radians(rotateDeg.value);
+  if (keyIsPressed) {
+    if (key === 'w') {
+      shared.y -= 0.5;
+    } else if (key === 's') {
+      shared.y += 0.5;
+    }
+  }
 
   ellipse(shared.x, shared.y, 100, 100);
 }
