@@ -16,6 +16,8 @@ function setup() {
 
   if (partyIsHost()) {
     clickCount.value = 0;
+    shared.x = 200;
+    shared.y = 200;
   }
 }
 
