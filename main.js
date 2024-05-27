@@ -1,5 +1,6 @@
 let shared;
 let clickCount;
+let rotateDeg;
 
 function preload() {
 	partyConnect(
@@ -8,6 +9,7 @@ function preload() {
 	);
   shared = partyLoadShared("shared", { x: 100, y: 100 });
   clickCount = partyLoadShared("clickCount", {value:0});
+  rotateDeg = partyLoadShared("rotate", {value: 0});
 }
 
 function setup() {
@@ -30,9 +32,11 @@ function mousePressed() {
 function draw() {
   background('#ffcccc');
   fill("#000066");
+  rotateDeg.value = rotationX;
 
   textAlign(CENTER, CENTER);
   text(clickCount.value, width/2, height/2);
+  text(rotateDeg, width/2, 100);
 
   ellipse(shared.x, shared.y, 100, 100);
 }
