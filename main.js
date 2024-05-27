@@ -36,7 +36,7 @@ function draw() {
 
   textAlign(CENTER, CENTER);
   text(clickCount.value, width/2, height/2);
-  text(radians(rotateDeg.value).value, width/2, 100);
+  text(radians(rotateDeg.value), width/2, 100);
 
   shared.x += radians(rotateDeg.value);
 
