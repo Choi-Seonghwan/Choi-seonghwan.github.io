@@ -38,5 +38,7 @@ function draw() {
   text(clickCount.value, width/2, height/2);
   text(rotateDeg.value, width/2, 100);
 
+  shared.x += rotateDeg.value;
+
   ellipse(shared.x, shared.y, 100, 100);
 }
