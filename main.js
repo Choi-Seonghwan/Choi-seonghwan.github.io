@@ -24,6 +24,9 @@ function draw() {
   rotateIs.set(rotationX);
   background(radians(rotationX));
 
+  fill(0);
+  text(rotateIs, width/2, height/2)
+
   fill("#000066");
 
   ellipse(shared.x, shared.y, 100, 100);
