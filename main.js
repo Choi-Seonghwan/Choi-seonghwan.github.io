@@ -7,7 +7,7 @@ function preload() {
 		"hello_party"
 	);
   shared = partyLoadShared("shared", { x: 100, y: 100 });
-  clickCount = partyLoadShared("clickCount");
+  clickCount = partyLoadShared("clickCount", { val: 0 });
 }
 
 function setup() {
@@ -18,7 +18,7 @@ function setup() {
 function mousePressed() {
   shared.x = mouseX;
   shared.y = mouseY;
-  clickCount++;
+  clickCount.val++;
 }
 
 function draw() {
@@ -26,7 +26,7 @@ function draw() {
   fill("#000066");
 
   textAlign(CENTER, CENTER);
-  text(clickCount, width/2, height/2);
+  text(clickCount.val, width/2, height/2);
 
   ellipse(shared.x, shared.y, 100, 100);
 }
