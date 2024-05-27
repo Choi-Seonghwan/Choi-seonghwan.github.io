@@ -36,7 +36,7 @@ function draw() {
 
   textAlign(CENTER, CENTER);
   text(clickCount.value, width/2, height/2);
-  text(rotateDeg, width/2, 100);
+  text(rotateDeg.value, width/2, 100);
 
   ellipse(shared.x, shared.y, 100, 100);
 }
