@@ -1,6 +1,9 @@
 let shared;
 let clickCount;
-let rotateDeg;
+
+let totalDeg;
+let guests;
+let player;
 
 function preload() {
   partyConnect(
@@ -9,7 +12,8 @@ function preload() {
   );
   shared = partyLoadShared("shared", { x: 100, y: 100 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
-  rotateDeg = partyLoadShared("rotate", { value: 0 });
+  guests = partyLoadGuestShareds();
+  player = partyLoadMyShared( {degX: 0} )
 }
 
 function setup() {
@@ -21,6 +25,8 @@ function setup() {
     shared.x = 200;
     shared.y = 200;
   }
+
+  totalDeg = 0;
 }
 
 function mousePressed() {
@@ -32,21 +38,30 @@ function mousePressed() {
 function draw() {
   background('#ffcccc');
   fill("#000066");
-  rotateDeg.value = rotationX;
+
+  player.degX = rotationX;
+
+  for (let i = 0; i < guests.length; i++) {
+    totalDeg += guests[i].degX
+  }
+
+  console.log(totalDeg);
 
   textAlign(CENTER, CENTER);
   text(clickCount.value, width / 2, height / 2);
-  text(radians(rotateDeg.value), width / 2, 100);
+  text(radians(totalDeg), width / 2, 100);
 
   if (keyIsPressed) {
     if (key === 'w') {
-      shared.x += 0.5*radians(rotateDeg.value);
+      shared.x += 0.5*radians(totalDeg);
       shared.y -= 0.5;
     } else if (key === 's') {
-      shared.x += 0.5*radians(rotateDeg.value);
+      shared.x += 0.5*radians(totalDeg);
       shared.y += 0.5;
     }
   }
 
   ellipse(shared.x, shared.y, 100, 100);
+
+  totalDeg = 0;
 }
