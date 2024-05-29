@@ -4,7 +4,7 @@ let mode = "select"; // "select" 또는 "rotate" 모드
 let machineImage;
 const holeDepth = 100; // 구멍의 깊이 임의로 설정
 let successed = 0;
-let frame = 20;
+let frame = 30;
 let game;
 
 
