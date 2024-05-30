@@ -88,6 +88,8 @@ function draw() {
 
   shared.slime.move(gameMap.obstacles);
 
+  sumDeg = 0;
+
   if (frameCount % 5 == 0) {
     currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
   }
