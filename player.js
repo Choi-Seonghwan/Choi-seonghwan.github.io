@@ -21,10 +21,14 @@ class Player {
               if (this.checkCollision('left', obstacles) && this.checkCollision('right', obstacles)) {
                 nextY -= this.speed;
                 nextX -= this.speed;
-              } else if (this.directions.right && !this.directions.left) {
+              }
+            } else if (this.directions.right && !this.directions.left) {
+                if (this.checkCollision('left', obstacles) && this.checkCollision('right', obstacles)) {
                 nextY -= this.speed;
                 nextX += this.speed;
               }
+            } else {
+              nextY -= this.speed;
             }
           }
         }
@@ -36,10 +40,14 @@ class Player {
               if (this.checkCollision('left', obstacles) && this.checkCollision('right', obstacles)) {
                 nextY += this.speed;
                 nextX -= this.speed;
-              } else if (this.directions.right && !this.directions.left) {
+              }
+            } else if (this.directions.right && !this.directions.left) {
+                if (this.checkCollision('left', obstacles) && this.checkCollision('right', obstacles)) {
                 nextY += this.speed;
                 nextX += this.speed;
               }
+            } else {
+              nextY += this.speed;
             }
           }
         }
