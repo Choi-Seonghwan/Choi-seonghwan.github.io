@@ -1,67 +1,135 @@
 let shared;
-let clickCount;
-
-let totalDeg;
 let guests;
+
 let player;
+let gameMap;
+let camera;
+let mapWidth = 1600;
+let mapHeight = 1200;
+
+let playerImgs = [];
+let currentPlayerImgFrame = 0;
+let currentPlayerImg;
+let mapImg;
+
+let playerInitX = 800;
+let playerInitY = 600;
+
+let keyPressedTrigger = false;
+let activeTrigger = null;
 
 function preload() {
-  partyConnect(
-    "wss://demoserver.p5party.org",
-    "hello_party"
-  );
-  shared = partyLoadShared("shared", { x: 100, y: 100 });
-  clickCount = partyLoadShared("clickCount", { value: 0 });
+  // 이미지 로드
+// playerImgs = loadImage('assets/playerAnim0.png');
+  for (let i =0; i < 5; i++){
+    playerImgs[i] = loadImage("assets/PlayerAnim"+i+".png");
+  }
+  currentPlayerImg = playerImgs[0]
+
+  mapImg = loadImage('assets/map320_240(2).png');
+
+  shared = partyLoadShared("shared", { x: 0, y: 0 });
   guests = partyLoadGuestShareds();
-  player = partyLoadMyShared( {degX: 0} )
+
 }
+
+
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(windowWidth, windowHeight);
+  // createCanvas(windowWidth,windowHeight);
   noStroke();
 
-  if (partyIsHost()) {
-    clickCount.value = 0;
-    shared.x = 200;
-    shared.y = 200;
-  }
+  player = new Player(playerInitX, playerInitY);
+  gameMap = new GameMap(mapWidth, mapHeight, mapImg);
+  camera = new Camera();
 
-  totalDeg = 0;
-}
 
-function mousePressed() {
-  shared.x = mouseX;
-  shared.y = mouseY;
-  clickCount.value++;
 }
 
 function draw() {
-  background('#ffcccc');
-  fill("#000066");
+  background(60);
+  // scale(0.5) //전체맵 확인용 스케일
 
-  player.degX = rotationX;
+  // 카메라 위치를 업데이트
+  camera.update(player);
 
-  for (let i = 0; i < guests.length; i++) {
-    totalDeg += guests[i].degX
+  // 카메라 적용
+  camera.apply();
+
+  gameMap.display();
+  player.move(gameMap.obstacles);
+
+  if (frameCount % 5 == 0) {
+    currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
   }
 
-  console.log(totalDeg);
+  console.log(frameCount);
+  player.display(currentPlayerImg);
 
-  textAlign(CENTER, CENTER);
-  text(clickCount.value, width / 2, height / 2);
-  text(radians(totalDeg), width / 2, 100);
+  gameMap.displayTriggers();
 
-  if (keyIsPressed) {
-    if (key === 'w') {
-      shared.x += 0.5*radians(totalDeg);
-      shared.y -= 0.5;
-    } else if (key === 's') {
-      shared.x += 0.5*radians(totalDeg);
-      shared.y += 0.5;
+
+
+  // 트리거 영역에 들어가면 activeTrigger에서 트리거 정보를 리턴한다
+  activeTrigger = gameMap.checkTriggers(player);
+
+  // 트리거 영역 안에서 있으면 텍스트가 자동으로 표시되고
+  // 특정 키(Q)를 누르면 (keyPressedTrigger) 특정 행동을 할 수 있다
+  // 텍스트 내용이나 인터렉션은 임시로 작성함
+  if (activeTrigger) {
+    fill(255);
+    rect(player.x - 50, player.y - 60, 100, 30);
+    fill(0);
+    textAlign(CENTER, CENTER);
+    text(activeTrigger.message, player.x, player.y - 45);
+    if (keyPressedTrigger) {
+      ellipse(player.x, player.y, 10);
+      keyPressedTrigger = !keyPressedTrigger
+    }
+  }
+}
+
+
+function keyPressed() {
+
+  //맵 인터렉션
+  if (keyCode === 81) {
+    activeTrigger = gameMap.checkTriggers(player);
+    if (activeTrigger) {
+      keyPressedTrigger = !keyPressedTrigger;
     }
   }
 
-  ellipse(shared.x, shared.y, 100, 100);
+  switch (keyCode) {
+    case 87:
+      player.setDirection('up', true);
+      break;
+    case 83:
+      player.setDirection('down', true);
+      break;
+    case 65:
+      player.setDirection('left', true);
+      break;
+    case 68:
+      player.setDirection('right', true);
+      break;
+  }
+}
 
-  totalDeg = 0;
+function keyReleased() {
+  switch (keyCode) {
+    case 87:
+      player.setDirection('up', false);
+      break;
+    case 83:
+      player.setDirection('down', false);
+      break;
+    case 65:
+      player.setDirection('left', false);
+      break;
+    case 68:
+      player.setDirection('right', false);
+      break;
+  }
 }
