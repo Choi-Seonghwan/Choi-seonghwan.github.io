@@ -92,12 +92,10 @@ class Player {
 
   display(img) {
     noSmooth(); // 가장 자리를 뚜렷하게 표현
-
-    shared.x = this.x
-    shared.y = this.y
+    
     // player를 그리되, 받은 img는 sketch에서 'currentPlayerImg'로 넣어줌. 
     // this.x - this.size / 2 와 같은 코드를 넣는 이유는 this.x와 this.y가 이미지의 정중앙으로 되게끔 하기 위함임
-    image(img, shared.x - this.size / 2, shared.y - this.size / 2, this.size, this.size);
+    image(img, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
   }
 
   setDirection(direction, state) { // wasd키가 하나라도 눌리면 true를 넣어주고, 키를 떼는 순간 false를 넣음

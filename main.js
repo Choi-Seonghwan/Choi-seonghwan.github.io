@@ -1,7 +1,8 @@
 let shared;
+let me;
 let guests;
+let sumDeg = 0;
 
-let player;
 let gameMap;
 let camera;
 let mapWidth = 1600;
@@ -28,7 +29,13 @@ function preload() {
 
   mapImg = loadImage('assets/map320_240(2).png');
 
-  shared = partyLoadShared("shared", { x: 0, y: 0 });
+  partyConnect(
+		"wss://demoserver.p5party.org", 
+		"slime_map"
+	);
+
+  shared = partyLoadShared("shared");
+  me = partyLoadMyShared( {rotateDeg: 0} );
   guests = partyLoadGuestShareds();
 
 }
@@ -40,10 +47,13 @@ function setup() {
   // createCanvas(windowWidth,windowHeight);
   noStroke();
 
-  player = new Player(playerInitX, playerInitY);
-  gameMap = new GameMap(mapWidth, mapHeight, mapImg);
+  shared.slime = new Player(playerInitX, playerInitY);
   camera = new Camera();
+  gameMap = new GameMap(mapWidth, mapHeight, mapImg);
 
+  if (partyIsHost()) {
+    console.log("slime online!")
+  }
 
 }
 
@@ -52,39 +62,54 @@ function draw() {
   // scale(0.5) //전체맵 확인용 스케일
 
   // 카메라 위치를 업데이트
-  camera.update(player);
+  camera.update(shared.slime);
 
   // 카메라 적용
   camera.apply();
 
   gameMap.display();
-  player.move(gameMap.obstacles);
+
+  me.rotateDeg = rotationX;
+
+  for (let guest of guests) {
+    sumDeg += guest.rotateDeg;
+  }
+
+  console.log(radians(sumDeg));
+
+  if (radians(sumDeg) >= 0.5) {
+    shared.slime.setDirection('right', true);
+  } else if (radians(sumDeg) <= -0.5) {
+    shared.slime.setDirection('left', true);
+  } else {
+    shared.slime.setDirection('right', false);
+    shared.slime.setDirection('left', false);
+  }
+
+  shared.slime.move(gameMap.obstacles);
 
   if (frameCount % 5 == 0) {
     currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
   }
 
-  console.log(frameCount);
-  player.display(currentPlayerImg);
+  shared.slime.display(currentPlayerImg);
 
   gameMap.displayTriggers();
 
-
-
   // 트리거 영역에 들어가면 activeTrigger에서 트리거 정보를 리턴한다
-  activeTrigger = gameMap.checkTriggers(player);
+  activeTrigger = gameMap.checkTriggers(shared.slime);
 
   // 트리거 영역 안에서 있으면 텍스트가 자동으로 표시되고
   // 특정 키(Q)를 누르면 (keyPressedTrigger) 특정 행동을 할 수 있다
   // 텍스트 내용이나 인터렉션은 임시로 작성함
   if (activeTrigger) {
     fill(255);
-    rect(player.x - 50, player.y - 60, 100, 30);
+    rect(shared.slime.x - 50, shared.slime.y - 60, 100, 30);
     fill(0);
     textAlign(CENTER, CENTER);
-    text(activeTrigger.message, player.x, player.y - 45);
+    text(activeTrigger.message, shared.slime.x, shared.slime.y - 45);
     if (keyPressedTrigger) {
-      ellipse(player.x, player.y, 10);
+      ellipse(shared.slime.x, shared.slime.y, 10);
       keyPressedTrigger = !keyPressedTrigger
     }
   }
@@ -95,7 +120,7 @@ function keyPressed() {
 
   //맵 인터렉션
   if (keyCode === 81) {
-    activeTrigger = gameMap.checkTriggers(player);
+    activeTrigger = gameMap.checkTriggers(shared.slime);
     if (activeTrigger) {
       keyPressedTrigger = !keyPressedTrigger;
     }
@@ -103,33 +128,33 @@ function keyPressed() {
 
   switch (keyCode) {
     case 87:
-      player.setDirection('up', true);
+      shared.slime.setDirection('up', true);
       break;
     case 83:
-      player.setDirection('down', true);
+      shared.slime.setDirection('down', true);
       break;
-    case 65:
-      player.setDirection('left', true);
-      break;
-    case 68:
-      player.setDirection('right', true);
-      break;
+    // case 65:
+    //   shared.slime.setDirection('left', true);
+    //   break;
+    // case 68:
+    //   shared.slime.setDirection('right', true);
+    //   break;
   }
 }
 
 function keyReleased() {
   switch (keyCode) {
     case 87:
-      player.setDirection('up', false);
+      shared.slime.setDirection('up', false);
       break;
     case 83:
-      player.setDirection('down', false);
+      shared.slime.setDirection('down', false);
       break;
-    case 65:
-      player.setDirection('left', false);
-      break;
-    case 68:
-      player.setDirection('right', false);
-      break;
+    // case 65:
+    //   shared.slime.setDirection('left', false);
+    //   break;
+    // case 68:
+    //   shared.slime.setDirection('right', false);
+    //   break;
   }
 }
