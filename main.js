@@ -75,8 +75,6 @@ function draw() {
     sumDeg += guest.rotateDeg;
   }
 
-  console.log(radians(sumDeg));
-
   if (radians(sumDeg) >= 0.5) {
     shared.slime.setDirection('right', true);
   } else if (radians(sumDeg) <= -0.5) {
@@ -85,6 +83,8 @@ function draw() {
     shared.slime.setDirection('right', false);
     shared.slime.setDirection('left', false);
   }
+
+  console.log('left is ' + shared.slime.directions.left + ', right is ' + shared.slime.directions.right);
 
   shared.slime.move(gameMap.obstacles);
 
