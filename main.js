@@ -23,7 +23,7 @@ function preload() {
   // 이미지 로드
 // playerImgs = loadImage('assets/playerAnim0.png');
   for (let i =0; i < 5; i++){
-    playerImgs[i] = loadImage("assets/PlayerAnim"+i+".png");
+    playerImgs[i] = loadImage("assets/playerAnim"+i+".png");
   }
   currentPlayerImg = playerImgs[0]
 
