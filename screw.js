@@ -46,18 +46,21 @@ function draw() {
 
 function mousePressed() {
   selectedScrew = null; // 이전 선택을 초기화
+  if (game.isGameOver) return;
   for (let screw of screws) {
     if (screw.isMouseOver()) {
       selectedScrew = screw;
       mode = "rotate";
       break;
     }
+    
   }
 }
 
 function keyPressed() {
   if (mode === "rotate" && selectedScrew) {
     if (keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
+      if (game.isGameOver) return;
       selectedScrew.move();
     }
   }
@@ -97,8 +100,6 @@ class Screw {
     endShape();
     this.head();
     pop();
-
-
   }
 
   head() {
@@ -151,24 +152,25 @@ class Screw {
   move() {
     // 나사가 구멍의 깊이를 초과하여 이동하지 않도록 제한
     if (this.depth + this.spacing <= holeDepth) {
+      console.log(this.depth , this.spacing, holeDepth)
       for (let i = 0; i < frame; i++) {
-        setTimeout(() => {
-          this.depth += this.spacing / frame; 
-          if (i == frame - 1) {
-            this.threadTurns -= 1;
-            animating = false;
-          }
-          this.update(); // 각도를 업데이트
-          sleep(500/frame);
-        }, 0);
+      
+        this.depth += this.spacing / frame;
+        console.log(this.spacing, frame, this.depth)
+        if (i == frame - 1) {
+          this.threadTurns -= 1;
+          this.animating = false;
+        }
+        this.update(); // 각도를 업데이트
+        // sleep(500/frame);
       }
-      if (this.successed == false && this.depth == holeDepth) {
+      if (this.successed == false && this.depth + this.spacing>= holeDepth) {
         successed += 1;
         this.successed = true;
       }
       // 나사를 구멍 속으로 이동
     } else {
-      animating = false;
+      this.animating = false;
       this.depth = holeDepth; // 구멍의 최대 깊이로 설정
     }
   }
@@ -194,7 +196,6 @@ class Game {
     screws.push(new Screw(600, 200));
     screws.push(new Screw(200, 400));
     screws.push(new Screw(600, 400));
-
   }
 
   show(){
@@ -250,7 +251,7 @@ class Game {
 
   resetTimer() {
     this.timerStart = millis(); // 타이머 리셋
-    this.timeLimit = 15000; // 타이머 제한 시간 
+    this.timeLimit = 10000; // 타이머 제한 시간 
     }
 
   resetGame() {
