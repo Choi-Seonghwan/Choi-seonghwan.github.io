@@ -84,7 +84,7 @@ function draw() {
     shared.slime.setDirection('left', false);
   }
 
-  console.log('left is ' + shared.slime.directions.left + ', right is ' + shared.slime.directions.right);
+  text('left is ' + shared.slime.directions.left + ', right is ' + shared.slime.directions.right,width/2,height/2);
 
   shared.slime.move(gameMap.obstacles);
 
