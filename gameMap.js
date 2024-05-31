@@ -4,31 +4,31 @@ class GameMap {
     this.height = height; //1200
     this.img = img;
     this.obstacles = [ //타일 한 칸당 80px로 계산
-      { x: 0, y: 0, width: 1600, height: 240 }, //top wall
-      { x: 480, y: 720, width: 80, height: 160 }, //spawn wall left
-      { x: 640, y: 400, width: 320, height: 160 }, //spawn wall middle
-      { x: 960, y: 720, width: 160, height: 160 }, //spawn wall right
+      { x: 0, y: 0, width: 1600, height: 220 }, //top wall
+      { x: 480, y: 760, width: 80, height: 100 }, //spawn wall left
+      { x: 640, y: 420, width: 320, height: 120 }, //spawn wall middle
+      { x: 960, y: 760, width: 160, height: 100 }, //spawn wall right
 
 
-      { x: 0, y: 400, width: 320, height: 160 }, //zone 1 wall 1
-      { x: 240, y: 480, width: 80, height: 160 }, //zone 1 wall 2
+      { x: 0, y: 440, width: 320, height: 100 }, //zone 1 wall 1
+      { x: 240, y: 480, width: 80, height: 140 }, //zone 1 wall 2
 
-      { x: 0, y: 800, width: 240, height: 160 }, //zone 2 wall top
-      { x: 0, y: 1040, width: 480, height: 160 }, //zone 2 wall bottom
+      { x: 0, y: 840, width: 240, height: 100 }, //zone 2 wall top
+      { x: 0, y: 1080, width: 480, height: 100 }, //zone 2 wall bottom
 
-      { x: 1280, y: 320, width: 320, height: 160 }, //zone 3 wall top
+      { x: 1280, y: 360, width: 320, height: 100 }, //zone 3 wall top
 
-      { x: 1360, y: 800, width: 240, height: 160 }, //zone 4 wall top
-      { x: 1120, y: 1040, width: 80, height: 160 }, //zone 4 wall bottom
+      { x: 1360, y: 840, width: 240, height: 100 }, //zone 4 wall top
+      { x: 1120, y: 1080, width: 80, height: 100 }, //zone 4 wall bottom
     ];
     this.triggers = [
-      { x: 560, y: 480, width: 480, height: 400, message: "spawn zone \n press Q to interact" },
+      { x: 560, y: 460, width: 480, height: 420, message: "spawn zone \n press Q to interact" },
 
-      { x: 0, y: 560, width: 320, height: 240, message: "zone 1" }, //왼쪽 위
-      { x: 0, y: 960, width: 400, height: 240, message: "zone 2" }, //왼쪽 아래
+      { x: 0, y: 500, width: 320, height: 300, message: "zone 1" }, //왼쪽 위
+      { x: 0, y: 920, width: 400, height: 280, message: "zone 2" }, //왼쪽 아래
 
-      { x: 1280, y: 480, width: 320, height: 320, message: "zone 3" }, //오른쪽 위
-      { x: 1200, y: 960, width: 400, height: 240, message: "zone 4" } //오른쪽 아래
+      { x: 1280, y: 440, width: 320, height: 360, message: "zone 3" }, //오른쪽 위
+      { x: 1200, y: 920, width: 400, height: 280, message: "zone 4" } //오른쪽 아래
     ];
   }
 
