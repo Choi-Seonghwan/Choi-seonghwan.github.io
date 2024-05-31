@@ -75,14 +75,14 @@ function draw() {
     sumDeg += guest.rotateDeg;
   }
 
-  if (radians(sumDeg) >= 0.5) {
-    shared.slime.setDirection('right', true);
-  } else if (radians(sumDeg) <= -0.5) {
-    shared.slime.setDirection('left', true);
-  } else {
-    shared.slime.setDirection('right', false);
-    shared.slime.setDirection('left', false);
-  }
+  // if (radians(sumDeg) >= 0.5) {
+  //   shared.slime.setDirection('right', true);
+  // } else if (radians(sumDeg) <= -0.5) {
+  //   shared.slime.setDirection('left', true);
+  // } else {
+  //   shared.slime.setDirection('right', false);
+  //   shared.slime.setDirection('left', false);
+  // }
 
   text('left is ' + shared.slime.directions.left + ', right is ' + shared.slime.directions.right,width/2,height/2);
 
