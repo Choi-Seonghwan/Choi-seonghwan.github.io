@@ -3,17 +3,17 @@ let clickCount;
 
 let totalDeg;
 let guests;
-let player;
+let me;
 
 function preload() {
   partyConnect(
     "wss://demoserver.p5party.org",
-    "hello_party"
+    "party_circle"
   );
   shared = partyLoadShared("shared", { x: 100, y: 100 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
-  player = partyLoadMyShared( {degX: 0} )
+  me = partyLoadMyShared( {degX: 0} )
 }
 
 function setup() {
@@ -39,7 +39,7 @@ function draw() {
   background('#ffcccc');
   fill("#000066");
 
-  player.degX = rotationX;
+  me.degX = rotationX;
 
   for (let i = 0; i < guests.length; i++) {
     totalDeg += guests[i].degX
