@@ -15,28 +15,28 @@ class Player {
 
     switch (this.lastDirection) {
       case 'up': // setDirection에서 정한 lastDirection이 up이면서 down은 false일 때
-      if (this.directions.up) {
+      if (this.directions.up && !this.directions.down) {
         if (this.checkCollision('up', obstacles)) { // 충돌 체크
           nextY -= this.speed;
         }
       }
        break;
      case 'down': // setDirection에서 정한 lastDirection이 down이면서 up은 false일 때
-        if (this.directions.down) {
+        if (this.directions.down && !this.directions.up) {
           if (this.checkCollision('down', obstacles)) { // 충돌 체크
             nextY += this.speed;
           }
         }
        break;
      case 'left': // setDirection에서 정한 lastDirection이 left이면서 right은 false일 때
-        if (this.directions.left) {
+        if (this.directions.left && !this.directions.right) {
           if (this.checkCollision('left', obstacles)) { // 충돌 체크
             nextX -= this.speed;
           }
         }
        break;
      case 'right': // setDirection에서 정한 lastDirection이 right이면서 left은 false일 때
-        if (this.directions.right) {
+        if (this.directions.right && !this.directions.left) {
           if (this.checkCollision('right', obstacles)) { // 충돌 체크
             nextX += this.speed;
           }
