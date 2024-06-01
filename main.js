@@ -59,9 +59,9 @@ function setup() {
     console.log("slime online!")
   }
 
-  console.log(rotationX);
+  console.log(radians(rotationX));
 
-  if (radians(rotationX) = 0) {
+  if (radians(rotationX) == 0) {
     device = 'Computer'
   } else {
     device = 'Mobile'
