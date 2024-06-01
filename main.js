@@ -19,6 +19,8 @@ let playerInitY = 600;
 let keyPressedTrigger = false;
 let activeTrigger = null;
 
+let device;
+
 function preload() {
   // 이미지 로드
 // playerImgs = loadImage('assets/playerAnim0.png');
@@ -35,8 +37,8 @@ function preload() {
 	);
 
   shared = partyLoadShared("shared");
-  me = partyLoadMyShared( {rotateDeg: 0} );
-  guests = partyLoadGuestShareds();
+  me = partyLoadMyShared(console.log("my object is called!"));
+  guests = partyLoadGuestShareds(console.log("guests shared!"));
 
 }
 
@@ -51,10 +53,18 @@ function setup() {
   camera = new Camera();
   gameMap = new GameMap(mapWidth, mapHeight, mapImg);
 
+  shared.test = 10;
+
   if (partyIsHost()) {
     console.log("slime online!")
   }
 
+  console.log(rotationX);
+  if (rotationX = "Null") {
+    device = 'Computer'
+  } else {
+    device = 'Mobile'
+  }
 }
 
 function draw() {
@@ -69,15 +79,14 @@ function draw() {
 
   gameMap.display();
 
-  me.rotateDeg = rotationX;
-
-  shared.slime.move(gameMap.obstacles);
+  me.rotateDeg = mouseX;
 
   if (frameCount % 5 == 0) {
     currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
   }
 
-  shared.slime.display(currentPlayerImg);
+    shared.slime.move(gameMap.obstacles);
+    shared.slime.display(currentPlayerImg);
 
   gameMap.displayTriggers();
 
@@ -89,14 +98,19 @@ function draw() {
   // 텍스트 내용이나 인터렉션은 임시로 작성함
   if (activeTrigger) {
     fill(255);
+    rectMode(CORNER);
     rect(shared.slime.x - 50, shared.slime.y - 60, 100, 30);
     fill(0);
+    textSize(10);
     textAlign(CENTER, CENTER);
     text(activeTrigger.message, shared.slime.x, shared.slime.y - 45);
-    if (keyPressedTrigger) {
-      ellipse(shared.slime.x, shared.slime.y, 10);
-      keyPressedTrigger = !keyPressedTrigger
-    }
+    if (shared.moveStop) {
+      rectMode(CENTER);
+      rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
+      fill(255);
+      textSize(50);
+      text(device, shared.slime.x, shared.slime.y)
+    } 
   }
 }
 
@@ -107,7 +121,7 @@ function keyPressed() {
   if (keyCode === 81) {
     activeTrigger = gameMap.checkTriggers(shared.slime);
     if (activeTrigger) {
-      keyPressedTrigger = !keyPressedTrigger;
+      shared.moveStop = !shared.moveStop;
     }
   }
 
