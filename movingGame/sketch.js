@@ -1,4 +1,35 @@
-class Game {
+let thetaX = 0, thetaY = 0, thetaZ = 0;
+let dthetaXdt = 0, dthetaYdt = 0, dthetaZdt = 0;
+let dt = 1, t = 0;
+let det = false;
+
+function cb(event) {
+  dthetaXdt = event.rotationRate.alpha * PI / 180;
+  dthetaYdt = event.rotationRate.beta * PI / 180;
+  dthetaZdt = event.rotationRate.gamma * PI / 180;
+
+  let ct = millis() / 1000;
+  dt = ct - t;
+  t = ct;
+
+  det = true;
+}
+
+function onClick() {
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('devicemotion', cb);
+        }
+      })
+      .catch(console.error);
+  } else {
+    window.addEventListener('devicemotion', cb);
+  }
+}
+
+class MovingGame {
   constructor() {
     this.directions = [];
     this.currentDirections = [];
@@ -71,6 +102,7 @@ class Game {
 
     this.drawDirections();
     this.drawTimer();
+    this.handleTilt();
   }
 
   drawStartScreen() {
@@ -119,17 +151,36 @@ class Game {
       return;
     }
 
-    let inputDirection;
-    if (key === 'W' || key === 'w') {
-      inputDirection = 'UP';
-    } else if (key === 'A' || key === 'a') {
-      inputDirection = 'LEFT';
-    } else if (key === 'S' || key === 's') {
-      inputDirection = 'DOWN';
-    } else if (key === 'D' || key === 'd') {
-      inputDirection = 'RIGHT';
-    }
+    this.processInput(this.getInputDirection());
+  }
 
+  handleTilt() {
+    if (det) {
+      thetaX += dthetaXdt * dt;
+      thetaY += dthetaYdt * dt;
+      thetaZ += dthetaZdt * dt;
+
+      const inputDirection = this.getInputDirectionByTilt();
+      if (inputDirection) {
+        this.processInput(inputDirection);
+      }
+    }
+  }
+
+  getInputDirectionByTilt() {
+    if (thetaX > 15) {
+      return 'UP';
+    } else if (thetaX < -15) {
+      return 'DOWN';
+    } else if (thetaY > 15) {
+      return 'RIGHT';
+    } else if (thetaY < -15) {
+      return 'LEFT';
+    }
+    return null;
+  }
+
+  processInput(inputDirection) {
     if (inputDirection) {
       let keyIndex = this.currentDirections.indexOf(inputDirection);
       if (keyIndex !== -1) {
@@ -169,7 +220,8 @@ let game;
 
 function setup() {
   createCanvas(800, 600);
-  game = new Game();
+  game = new MovingGame();
+  onClick(); // 기울기 감지 시작
 }
 
 function draw() {
