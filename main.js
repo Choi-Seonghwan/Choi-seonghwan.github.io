@@ -60,7 +60,8 @@ function setup() {
   }
 
   console.log(rotationX);
-  if (rotationX = "Null") {
+
+  if (rotationX = 0) {
     device = 'Computer'
   } else {
     device = 'Mobile'
