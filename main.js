@@ -61,7 +61,7 @@ function setup() {
 
   console.log(rotationX);
 
-  if (rotationX = 0) {
+  if (radians(rotationX) = 0) {
     device = 'Computer'
   } else {
     device = 'Mobile'
