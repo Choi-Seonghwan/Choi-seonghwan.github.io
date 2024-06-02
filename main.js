@@ -94,7 +94,8 @@ function draw() {
 
   // 트리거 영역에 들어가면 activeTrigger에서 트리거 정보를 리턴한다
   activeTrigger = gameMap.checkTriggers(shared.slime);
-    shared.slime.display(currentPlayerImg);
+  
+  shared.slime.display(currentPlayerImg);
 
     // 트리거 영역 안에서 있으면 텍스트가 자동으로 표시되고
     // 특정 키(Q)를 누르면 (keyPressedTrigger) 특정 행동을 할 수 있다
@@ -109,15 +110,71 @@ function draw() {
       if (shared.moveStop) {
         rectMode(CENTER);
         rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
-        fill(255);
-        textSize(50);
-        text(device, shared.slime.x, shared.slime.y)
+
+        switch(activeTrigger.message) {
+          case "spawn zone \n press Q to interact":
+            fill(255);
+            textSize(50);
+            text('Spawn Zone', shared.slime.x, shared.slime.y)     
+            break;
+          case "zone 1":
+            fill(255);
+            textSize(50);
+            text('Zone 1', shared.slime.x, shared.slime.y)     
+            break;
+          case "zone 2":
+            fill(255);
+            textSize(50);
+            text('Zone 2', shared.slime.x, shared.slime.y)     
+            break;
+          case "zone 3":
+            fill(255);
+            textSize(50);
+            text('Zone 3', shared.slime.x, shared.slime.y)     
+            break;
+          case "zone 4":
+            fill(255);
+            textSize(50);
+            text('Zone 4', shared.slime.x, shared.slime.y)     
+            break;
+        }
       } 
     }
   } else {
     rectMode(CORNER);
     fill('#ffcccc');
     rect(0,0,windowWidth,windowHeight);
+
+    if (shared.moveStop) {
+      textAlign(CENTER, CENTER);
+      switch(activeTrigger.message) {
+        case "spawn zone \n press Q to interact":
+          fill(255);
+          textSize(50);
+          text('Spawn Zone', shared.slime.x, shared.slime.y)     
+          break;
+        case "zone 1":
+          fill(255);
+          textSize(50);
+          text('Zone 1', shared.slime.x, shared.slime.y)     
+          break;
+        case "zone 2":
+          fill(255);
+          textSize(50);
+          text('Zone 2', shared.slime.x, shared.slime.y)     
+          break;
+        case "zone 3":
+          fill(255);
+          textSize(50);
+          text('Zone 3', shared.slime.x, shared.slime.y)     
+          break;
+        case "zone 4":
+          fill(255);
+          textSize(50);
+          text('Zone 4', shared.slime.x, shared.slime.y)     
+          break;
+      }
+    } 
   }
 }
 
