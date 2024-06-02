@@ -145,36 +145,39 @@ function draw() {
     fill('#ffcccc');
     rect(0,0,windowWidth,windowHeight);
 
-    if (shared.moveStop) {
-      textAlign(CENTER, CENTER);
-      switch(activeTrigger.message) {
-        case "spawn zone \n press Q to interact":
-          fill(255);
-          textSize(50);
-          text('Spawn Zone', shared.slime.x, shared.slime.y)     
-          break;
-        case "zone 1":
-          fill(255);
-          textSize(50);
-          text('Zone 1', shared.slime.x, shared.slime.y)     
-          break;
-        case "zone 2":
-          fill(255);
-          textSize(50);
-          text('Zone 2', shared.slime.x, shared.slime.y)     
-          break;
-        case "zone 3":
-          fill(255);
-          textSize(50);
-          text('Zone 3', shared.slime.x, shared.slime.y)     
-          break;
-        case "zone 4":
-          fill(255);
-          textSize(50);
-          text('Zone 4', shared.slime.x, shared.slime.y)     
-          break;
-      }
-    } 
+    textSize(50);
+    text(shared.moveStop);
+
+    // if (shared.moveStop) {
+    //   textAlign(CENTER, CENTER);
+    //   switch(activeTrigger.message) {
+    //     case "spawn zone \n press Q to interact":
+    //       fill(255);
+    //       textSize(50);
+    //       text('Spawn Zone', shared.slime.x, shared.slime.y)     
+    //       break;
+    //     case "zone 1":
+    //       fill(255);
+    //       textSize(50);
+    //       text('Zone 1', shared.slime.x, shared.slime.y)     
+    //       break;
+    //     case "zone 2":
+    //       fill(255);
+    //       textSize(50);
+    //       text('Zone 2', shared.slime.x, shared.slime.y)     
+    //       break;
+    //     case "zone 3":
+    //       fill(255);
+    //       textSize(50);
+    //       text('Zone 3', shared.slime.x, shared.slime.y)     
+    //       break;
+    //     case "zone 4":
+    //       fill(255);
+    //       textSize(50);
+    //       text('Zone 4', shared.slime.x, shared.slime.y)     
+    //       break;
+    //   }
+    // } 
   }
 }
 
