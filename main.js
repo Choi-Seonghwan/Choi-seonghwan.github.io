@@ -131,8 +131,8 @@ function draw() {
   background(60);
   //scale(0.5) //전체맵 확인용 스케일
 
-  me.degX = rotationX;
-  me.degY = rotationY;
+  me.degX = rotationY;
+  me.degY = rotationZ;
 
   totalDegX = 0; // 합산된 회전 값을 초기화
   totalDegY = 0;

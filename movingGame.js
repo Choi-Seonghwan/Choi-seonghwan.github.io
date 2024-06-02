@@ -4,7 +4,7 @@ class MovingGame {
       this.currentDirections = [];
       this.round = 1;
       this.maxRounds = 5;
-      this.baseTimeLimit = 3000; // 기본 30초
+      this.baseTimeLimit = 30000; // 기본 30초
       this.startTime = 0;
       this.gameOver = false;
       this.gameStarted = false;
