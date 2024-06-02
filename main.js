@@ -54,6 +54,7 @@ function setup() {
   gameMap = new GameMap(mapWidth, mapHeight, mapImg);
 
   shared.test = 10;
+  shared.zone = 0;
 
   if (partyIsHost()) {
     console.log("slime online!")
@@ -82,7 +83,7 @@ function draw() {
   
   gameMap.display();
 
-  me.rotateDeg = mouseX;
+  me.rotateDeg = accelerationX;
 
   if (frameCount % 5 == 0) {
     currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
@@ -115,63 +116,72 @@ function draw() {
           case "spawn zone \n press Q to interact":
             fill(255);
             textSize(50);
-            text('Spawn Zone', shared.slime.x, shared.slime.y)     
+            text('Spawn Zone', shared.slime.x, shared.slime.y)
+            shared.zone = 0;     
             break;
           case "zone 1":
             fill(255);
             textSize(50);
-            text('Zone 1', shared.slime.x, shared.slime.y)     
+            text('Zone 1', shared.slime.x, shared.slime.y)    
+            shared.zone = 1; 
             break;
           case "zone 2":
             fill(255);
             textSize(50);
-            text('Zone 2', shared.slime.x, shared.slime.y)     
+            text('Zone 2', shared.slime.x, shared.slime.y) 
+            shared.zone = 2;    
             break;
           case "zone 3":
             fill(255);
             textSize(50);
-            text('Zone 3', shared.slime.x, shared.slime.y)     
+            text('Zone 3', shared.slime.x, shared.slime.y)  
+            shared.zone = 3;   
             break;
           case "zone 4":
             fill(255);
             textSize(50);
-            text('Zone 4', shared.slime.x, shared.slime.y)     
+            text('Zone 4', shared.slime.x, shared.slime.y)   
+            shared.zone = 4;  
             break;
         }
       } 
     }
+    textSize(50);
+    fill(0);
+    text(radians(rotationX), windowWidth/2, windowHeight/2);
   } else {
     rectMode(CORNER);
     fill('#ffcccc');
     rect(0,0,windowWidth,windowHeight);
     fill(0);
     textSize(50);
+    textAlign(CENTER, CENTER);
     text(shared.moveStop, windowWidth/2, windowHeight/4);
 
-    if (shared.moveStop) {
+    if (shared.moveStop == true) {
       textAlign(CENTER, CENTER);
-      switch(activeTrigger.message) {
-        case "spawn zone \n press Q to interact":
+      switch(shared.zone) {
+        case 0:
           fill(255);
           textSize(50);
           text('Spawn Zone', windowWidth/2, windowHeight/2)     
           break;
-        case "zone 1":
+        case 1:
           fill(255);
           textSize(50);
           text('Zone 1', windowWidth/2, windowHeight/2)     
           break;
-        case "zone 2":
+        case 2:
           fill(255);
           textSize(50);
           text('Zone 2', windowWidth/2, windowHeight/2)     
           break;
-        case "zone 3":
+        case 3:
           fill(255);
           textSize(50);
           text('Zone 3', windowWidth/2, windowHeight/2)     
           break;
-        case "zone 4":
+        case 4:
           fill(255);
           textSize(50);
           text('Zone 4', windowWidth/2, windowHeight/2)     
