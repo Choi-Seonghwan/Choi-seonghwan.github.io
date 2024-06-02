@@ -146,7 +146,7 @@ function draw() {
     rect(0,0,windowWidth,windowHeight);
 
     textSize(50);
-    text(shared.moveStop);
+    text(shared.moveStop, windowWidthwidth/2, windowHeightheight/2);
 
     // if (shared.moveStop) {
     //   textAlign(CENTER, CENTER);
