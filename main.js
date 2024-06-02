@@ -146,38 +146,38 @@ function draw() {
     rect(0,0,windowWidth,windowHeight);
     fill(0);
     textSize(50);
-    text(shared.moveStop, windowWidthwidth/2, windowHeightheight/2);
+    text(shared.moveStop, windowWidth/2, windowHeight/4);
 
-    // if (shared.moveStop) {
-    //   textAlign(CENTER, CENTER);
-    //   switch(activeTrigger.message) {
-    //     case "spawn zone \n press Q to interact":
-    //       fill(255);
-    //       textSize(50);
-    //       text('Spawn Zone', shared.slime.x, shared.slime.y)     
-    //       break;
-    //     case "zone 1":
-    //       fill(255);
-    //       textSize(50);
-    //       text('Zone 1', shared.slime.x, shared.slime.y)     
-    //       break;
-    //     case "zone 2":
-    //       fill(255);
-    //       textSize(50);
-    //       text('Zone 2', shared.slime.x, shared.slime.y)     
-    //       break;
-    //     case "zone 3":
-    //       fill(255);
-    //       textSize(50);
-    //       text('Zone 3', shared.slime.x, shared.slime.y)     
-    //       break;
-    //     case "zone 4":
-    //       fill(255);
-    //       textSize(50);
-    //       text('Zone 4', shared.slime.x, shared.slime.y)     
-    //       break;
-    //   }
-    // } 
+    if (shared.moveStop) {
+      textAlign(CENTER, CENTER);
+      switch(activeTrigger.message) {
+        case "spawn zone \n press Q to interact":
+          fill(255);
+          textSize(50);
+          text('Spawn Zone', windowWidth/2, windowHeight/2)     
+          break;
+        case "zone 1":
+          fill(255);
+          textSize(50);
+          text('Zone 1', windowWidth/2, windowHeight/2)     
+          break;
+        case "zone 2":
+          fill(255);
+          textSize(50);
+          text('Zone 2', windowWidth/2, windowHeight/2)     
+          break;
+        case "zone 3":
+          fill(255);
+          textSize(50);
+          text('Zone 3', windowWidth/2, windowHeight/2)     
+          break;
+        case "zone 4":
+          fill(255);
+          textSize(50);
+          text('Zone 4', windowWidth/2, windowHeight/2)     
+          break;
+      }
+    } 
   }
 }
 
