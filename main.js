@@ -144,7 +144,7 @@ function draw() {
     rectMode(CORNER);
     fill('#ffcccc');
     rect(0,0,windowWidth,windowHeight);
-
+    fill(0);
     textSize(50);
     text(shared.moveStop, windowWidthwidth/2, windowHeightheight/2);
 
