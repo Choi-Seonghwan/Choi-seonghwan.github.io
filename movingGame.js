@@ -139,9 +139,9 @@ class MovingGame {
       } else if (radians(totalDegX) < -1) {
         inputDirection = 'LEFT';
       } else if (radians(totalDegY) > 1) {
-        inputDirection = 'DOWN';
-      } else if (radians(totalDegY) < -1) {
         inputDirection = 'UP';
+      } else if (radians(totalDegY) < -1) {
+        inputDirection = 'DOWN';
       }
   
       // 첫 번째 방향과 현재 방향을 비교하여 일치하면 첫 번째 방향만 제거
