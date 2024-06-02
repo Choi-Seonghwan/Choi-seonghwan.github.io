@@ -70,14 +70,16 @@ function setup() {
 
 function draw() {
   background(60);
-  // scale(0.5) //전체맵 확인용 스케일
+  //scale(0.5) //전체맵 확인용 스케일
+
+  if (device == 'Computer') {
 
   // 카메라 위치를 업데이트
   camera.update(shared.slime);
 
   // 카메라 적용
   camera.apply();
-
+  
   gameMap.display();
 
   me.rotateDeg = mouseX;
@@ -86,35 +88,38 @@ function draw() {
     currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
   }
 
-    shared.slime.move(gameMap.obstacles);
-    shared.slime.display(currentPlayerImg);
+  shared.slime.move(gameMap.obstacles);
 
   gameMap.displayTriggers();
 
   // 트리거 영역에 들어가면 activeTrigger에서 트리거 정보를 리턴한다
   activeTrigger = gameMap.checkTriggers(shared.slime);
+    shared.slime.display(currentPlayerImg);
 
-  // 트리거 영역 안에서 있으면 텍스트가 자동으로 표시되고
-  // 특정 키(Q)를 누르면 (keyPressedTrigger) 특정 행동을 할 수 있다
-  // 텍스트 내용이나 인터렉션은 임시로 작성함
-  if (activeTrigger) {
-    fill(255);
-    rectMode(CORNER);
-    rect(shared.slime.x - 50, shared.slime.y - 60, 100, 30);
-    fill(0);
-    textSize(10);
-    textAlign(CENTER, CENTER);
-    text(activeTrigger.message, shared.slime.x, shared.slime.y - 45);
-    if (shared.moveStop) {
-      rectMode(CENTER);
-      rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
+    // 트리거 영역 안에서 있으면 텍스트가 자동으로 표시되고
+    // 특정 키(Q)를 누르면 (keyPressedTrigger) 특정 행동을 할 수 있다
+    if (activeTrigger) {
       fill(255);
-      textSize(50);
-      text(device, shared.slime.x, shared.slime.y)
-    } 
+      rectMode(CORNER);
+      rect(shared.slime.x - 50, shared.slime.y - 60, 100, 30);
+      fill(0);
+      textSize(10);
+      textAlign(CENTER, CENTER);
+      text(activeTrigger.message, shared.slime.x, shared.slime.y - 45);
+      if (shared.moveStop) {
+        rectMode(CENTER);
+        rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
+        fill(255);
+        textSize(50);
+        text(device, shared.slime.x, shared.slime.y)
+      } 
+    }
+  } else {
+    rectMode(CORNER);
+    fill('#ffcccc');
+    rect(0,0,windowWidth,windowHeight);
   }
 }
-
 
 function keyPressed() {
 
