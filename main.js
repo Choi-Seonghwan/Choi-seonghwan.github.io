@@ -30,6 +30,51 @@ let movingGame;
 let totalDegX;
 let totalDegY;
 
+// document.addEventListener("DOMContentLoaded", function() {
+//   const activateButton = document.getElementById('activateButton');
+//   if (activateButton) {
+//     activateButton.addEventListener('click', onClick);
+//   } else {
+//     console.error("Activate button not found.");
+//   }
+// });
+
+// function onClick() {
+//   console.log("Activate button clicked");
+//   if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+//     DeviceOrientationEvent.requestPermission()
+//       .then(permissionState => {
+//         if (permissionState === 'granted') {
+//           console.log("Permission granted");
+//           window.addEventListener('deviceorientation', cb);
+//         } else {
+//           console.log("Permission denied");
+//         }
+//       })
+//       .catch(error => {
+//         console.error("Error requesting permission:", error);
+//       });
+//   } else {
+//     console.log("DeviceOrientationEvent.requestPermission is not a function");
+//     window.addEventListener('deviceorientation', cb);
+//   }
+// }
+
+// function cb(event) {
+//   console.log("Device orientation event triggered");
+//   if (event.gamma !== null) {
+//     me.degY = radians(event.gamma);
+//     console.log("degY:", me.degY);
+//   }
+//   if (event.beta !== null) {
+//     me.degX = radians(event.beta);
+//     console.log("degX:", me.degX);
+//   }
+//   // party.js와 동기화
+//   partySetShared(me);
+//   console.log("Shared me:", me);
+// }
+
 function preload() {
   // 이미지 로드
 // playerImgs = loadImage('assets/playerAnim0.png');
@@ -85,6 +130,9 @@ function setup() {
 function draw() {
   background(60);
   //scale(0.5) //전체맵 확인용 스케일
+
+  me.degX = rotationX;
+  me.degY = rotationY;
 
   totalDegX = 0; // 합산된 회전 값을 초기화
   totalDegY = 0;
@@ -281,49 +329,4 @@ function mousePressed() {
   } else {
     console.error("game.handleKeyPressed is not a function or game is not defined");
   }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  const activateButton = document.getElementById('activateButton');
-  if (activateButton) {
-    activateButton.addEventListener('click', onClick);
-  } else {
-    console.error("Activate button not found.");
-  }
-});
-
-function onClick() {
-  console.log("Activate button clicked");
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission()
-      .then(permissionState => {
-        if (permissionState === 'granted') {
-          console.log("Permission granted");
-          window.addEventListener('deviceorientation', cb);
-        } else {
-          console.log("Permission denied");
-        }
-      })
-      .catch(error => {
-        console.error("Error requesting permission:", error);
-      });
-  } else {
-    console.log("DeviceOrientationEvent.requestPermission is not a function");
-    window.addEventListener('deviceorientation', cb);
-  }
-}
-
-function cb(event) {
-  console.log("Device orientation event triggered");
-  if (event.gamma !== null) {
-    me.degY = radians(event.gamma);
-    console.log("degY:", me.degY);
-  }
-  if (event.beta !== null) {
-    me.degX = radians(event.beta);
-    console.log("degX:", me.degX);
-  }
-  // party.js와 동기화
-  partySetShared(me);
-  console.log("Shared me:", me);
 }
