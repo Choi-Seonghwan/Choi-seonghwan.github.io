@@ -1,13 +1,15 @@
+//p5.party 기본
 let shared;
 let me;
 let guests;
+
 let sumDeg = 0;
 
+//game Map & character
 let gameMap;
 let camera;
 let mapWidth = 1600;
 let mapHeight = 1200;
-
 let playerImgs = [];
 let currentPlayerImgFrame = 0;
 let currentPlayerImg;
@@ -16,10 +18,17 @@ let mapImg;
 let playerInitX = 800;
 let playerInitY = 600;
 
+// zone trigger
 let keyPressedTrigger = false;
 let activeTrigger = null;
 
+// device classification
 let device;
+
+//moving game
+let movingGame;
+let totalDegX;
+let totalDegY;
 
 function preload() {
   // 이미지 로드
@@ -37,7 +46,7 @@ function preload() {
 	);
 
   shared = partyLoadShared("shared");
-  me = partyLoadMyShared(console.log("my object is called!"));
+  me = partyLoadMyShared({ degX: 0, degY: 0}, console.log("my object is called!"));
   guests = partyLoadGuestShareds(console.log("guests shared!"));
 
 }
@@ -67,12 +76,28 @@ function setup() {
   } else {
     device = 'Mobile'
   }
+
+  movingGame = new MovingGame();
+  totalDegX = 0;
+  totalDegY = 0;
 }
 
 function draw() {
   background(60);
   //scale(0.5) //전체맵 확인용 스케일
 
+  totalDegX = 0; // 합산된 회전 값을 초기화
+  totalDegY = 0;
+
+  for (let i = 0; i < guests.length; i++) {
+    if (guests[i] && guests[i].degX !== undefined && guests[i].degY !== undefined) {
+      totalDegX += guests[i].degX; // 각 게스트의 X축 기울기를 합산
+      totalDegY += guests[i].degY; // 각 게스트의 Y축 기울기를 합산
+    }
+  }
+  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
+  console.log(movingGame.startTime);
+  console.log(millis());
   if (device == 'Computer') {
 
   // 카메라 위치를 업데이트
@@ -109,35 +134,44 @@ function draw() {
       textAlign(CENTER, CENTER);
       text(activeTrigger.message, shared.slime.x, shared.slime.y - 45);
       if (shared.moveStop) {
-        rectMode(CENTER);
-        rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
 
         switch(activeTrigger.message) {
           case "spawn zone \n press Q to interact":
+            rectMode(CENTER);
+            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
             text('Spawn Zone', shared.slime.x, shared.slime.y)
             shared.zone = 0;     
             break;
           case "zone 1":
-            fill(255);
-            textSize(50);
-            text('Zone 1', shared.slime.x, shared.slime.y)    
             shared.zone = 1; 
+            fill(255);
+            rectMode(CENTER);
+            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
+            movingGame.update();
+            movingGame.draw();
+            movingGame.degmatch();   
             break;
           case "zone 2":
+            rectMode(CENTER);
+            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
             text('Zone 2', shared.slime.x, shared.slime.y) 
             shared.zone = 2;    
             break;
           case "zone 3":
+            rectMode(CENTER);
+            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
             text('Zone 3', shared.slime.x, shared.slime.y)  
             shared.zone = 3;   
             break;
           case "zone 4":
+            rectMode(CENTER);
+            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
             text('Zone 4', shared.slime.x, shared.slime.y)   
@@ -199,6 +233,13 @@ function keyPressed() {
     if (activeTrigger) {
       shared.moveStop = !shared.moveStop;
     }
+
+    if (!shared.moveStop) {
+      switch (shared.zone) {
+        case 1:
+          movingGame.resetGame();
+      }
+    }
   }
 
   switch (keyCode) {
@@ -232,4 +273,57 @@ function keyReleased() {
       shared.slime.setDirection('right', false);
       break;
   }
+}
+
+function mousePressed() {
+  if (movingGame && typeof movingGame.handleKeyPressed === 'function') {
+    movingGame.handleKeyPressed();
+  } else {
+    console.error("game.handleKeyPressed is not a function or game is not defined");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const activateButton = document.getElementById('activateButton');
+  if (activateButton) {
+    activateButton.addEventListener('click', onClick);
+  } else {
+    console.error("Activate button not found.");
+  }
+});
+
+function onClick() {
+  console.log("Activate button clicked");
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          console.log("Permission granted");
+          window.addEventListener('deviceorientation', cb);
+        } else {
+          console.log("Permission denied");
+        }
+      })
+      .catch(error => {
+        console.error("Error requesting permission:", error);
+      });
+  } else {
+    console.log("DeviceOrientationEvent.requestPermission is not a function");
+    window.addEventListener('deviceorientation', cb);
+  }
+}
+
+function cb(event) {
+  console.log("Device orientation event triggered");
+  if (event.gamma !== null) {
+    me.degY = radians(event.gamma);
+    console.log("degY:", me.degY);
+  }
+  if (event.beta !== null) {
+    me.degX = radians(event.beta);
+    console.log("degX:", me.degX);
+  }
+  // party.js와 동기화
+  partySetShared(me);
+  console.log("Shared me:", me);
 }
