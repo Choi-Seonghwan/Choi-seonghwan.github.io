@@ -342,7 +342,7 @@ function mousePressed() {
   if (device == 'Mobile') {
 
   } else {
-    if (mouseX > 0 && mouseX < windowWidth && mouseY > 0 && mouseY < windowHeight / 4) {
+    if (touch.x > 0 && touch.x < windowWidth && touch.y > 0 && touch.y < windowHeight / 4) {
       activeTrigger = gameMap.checkTriggers(shared.slime);
       if (activeTrigger) {
         shared.moveStop = !shared.moveStop;
