@@ -338,7 +338,9 @@ function mousePressed() {
   } else {
     console.error("game.handleKeyPressed is not a function or game is not defined");
   }
+}
 
+function touchStarted() {
   if (device == 'Computer') {
 
   } else {
