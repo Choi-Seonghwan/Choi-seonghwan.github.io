@@ -285,19 +285,19 @@ function draw() {
 function keyPressed() {
 
   //맵 인터렉션
-  if (keyCode === 81) {
-    activeTrigger = gameMap.checkTriggers(shared.slime);
-    if (activeTrigger) {
-      shared.moveStop = !shared.moveStop;
-    }
+  // if (keyCode === 81) {
+  //   activeTrigger = gameMap.checkTriggers(shared.slime);
+  //   if (activeTrigger) {
+  //     shared.moveStop = !shared.moveStop;
+  //   }
 
-    if (!shared.moveStop) {
-      switch (shared.zone) {
-        case 1:
-          movingGame.resetGame();
-      }
-    }
-  }
+  //   if (!shared.moveStop) {
+  //     switch (shared.zone) {
+  //       case 1:
+  //         movingGame.resetGame();
+  //     }
+  //   }
+  // }
 
   switch (keyCode) {
     case 87:
@@ -339,20 +339,22 @@ function mousePressed() {
     console.error("game.handleKeyPressed is not a function or game is not defined");
   }
 
-  // if (device == 'Mobile') {
+  if (device == 'Computer') {
 
-  // } else {
-  //   if (touch.x > 0 && touch.x < windowWidth && touch.y > 0 && touch.y < windowHeight / 4) {
-  //     activeTrigger = gameMap.checkTriggers(shared.slime);
-  //     if (activeTrigger) {
-  //       shared.moveStop = !shared.moveStop;
-  //     }
-  //     if (!shared.moveStop) {
-  //       switch (shared.zone) {
-  //         case 1:
-  //           movingGame.resetGame();
-  //       }
-  //     }
-  //   }
-  // }
+  } else {
+    for (let touch of touches) {
+      if (touch.x > 0 && touch.x < windowWidth && touch.y > 0 && touch.y < windowHeight / 4) {
+        activeTrigger = gameMap.checkTriggers(shared.slime);
+        if (activeTrigger) {
+          shared.moveStop = !shared.moveStop;
+        }
+        if (!shared.moveStop) {
+          switch (shared.zone) {
+            case 1:
+              movingGame.resetGame();
+          }
+        }
+      }
+    }
+  }
 }
