@@ -348,12 +348,11 @@ function mousePressed() {
         if (activeTrigger) {
           shared.moveStop = !shared.moveStop;
         }
-
-        if (shared.moveStop) {
-          switch (shared.zone) {
-            case 1:
-              movingGame.resetGame();
-          }
+      }
+      if (shared.moveStop) {
+        switch (shared.zone) {
+          case 1:
+            movingGame.resetGame();
         }
       }
     }
