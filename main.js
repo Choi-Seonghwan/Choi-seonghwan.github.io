@@ -230,7 +230,9 @@ function draw() {
             shared.zone = 4;  
             break;
         }
-      } 
+      } else {
+        movingGame.resetGame();
+      }
     }
     textSize(50);
     fill(0);
@@ -349,9 +351,6 @@ function touchStarted() {
         activeTrigger = gameMap.checkTriggers(shared.slime);
         if (activeTrigger) {
           shared.moveStop = !shared.moveStop;
-          if (!shared.moveStop) {
-            movingGame.resetGame();
-          }
         }
       }
     }
