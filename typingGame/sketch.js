@@ -20,8 +20,8 @@ class ChatBot {
     this.isGameStarted = false; // 게임 시작 상태
 
     this.inputBox = createInput(); // 사용자의 입력을 받는 입력창
-    this.inputBox.position((windowWidth - (width - 1000)) / 2, height - 150);
-    this.inputBox.size(width - 1000, 80);
+    this.inputBox.position((windowWidth-(windowWidth-1000))/2, windowHeight - 150);
+    this.inputBox.size(windowWidth - 1000, 80);
     this.inputBox.changed(this.sendMessage.bind(this)); // 입력 완료 후 sendMessage() 함수 호출
     this.inputBox.hide(); // 처음에는 입력창을 숨김
 
@@ -85,7 +85,7 @@ class ChatBot {
     textAlign(CENTER);
     textSize(40);
     if (this.currentInputIndex < this.expectedInputs.length) {
-      text("입력할 문구: " + this.expectedInputs[this.currentInputIndex], width / 2, height - 180);
+      text("입력할 문구: " + this.expectedInputs[this.currentInputIndex], windowWidth / 2, windowHeight - 180);
     } else {
       this.gameSuccess(); // 모든 입력이 완료되었을 때 게임 성공 처리
     }
@@ -94,27 +94,27 @@ class ChatBot {
     for (let i = 0; i < this.userMessages.length; i++) {
       fill(0);
       textAlign(RIGHT);
-      textSize(40);
-      rect(width - 650, 340 + 480 * i, 150, 150); // 내 프로필 사진
-      text(this.userMessages[i], width - 500, 540 + 500 * i);
+      textSize(30);
+      rect(windowWidth - 650, 310 + 480 * i, 150, 150); // 내 프로필 사진
+      text(this.userMessages[i], windowWidth - 500, 500 + 500 * i);
     }
 
     // 챗봇의 메시지 그리기
     for (let i = 0; i < this.assistantMessages.length; i++) {
       fill(0, 100, 255);
       textAlign(LEFT);
-      textSize(40);
-      rect(500, 100 + 480 * i, 150, 150); // 상대방 프로필 사진
-      text(this.assistantMessages[i], 500, 290 + 500 * i);
+      textSize(30);
+      rect(500, 70 + 480 * i, 150, 150); // 상대방 프로필 사진
+      text(this.assistantMessages[i], 500, 260 + 480 * i);
     }
 
     // 타이머 막대 그래프 표시
     let timePassed = millis() - this.timerStart;
     let timeLeft = this.timeLimit - timePassed;
-    let barWidth = map(timeLeft, 0, this.timeLimit, 0, width - 1000);
+    let barWidth = map(timeLeft, 0, this.timeLimit, 0, windowWidth - 1000);
 
     fill(255, 0, 0);
-    rect(500, height - 270, barWidth, 40);
+    rect(500, windowHeight - 270, barWidth, 40);
 
     if (timeLeft <= 0) {
       this.gameOver();
@@ -127,9 +127,9 @@ class ChatBot {
     textSize(40);
     textAlign(CENTER);
     if (this.isGameSuccess) {
-      text("게임 성공!", width / 2, height / 2 - 50);
+      text("게임 성공!", windowWidth / 2, windowHeight / 2 - 50);
     } else {
-      text("시간 초과! 게임 오버", width / 2, height / 2 - 50);
+      text("시간 초과! 게임 오버", windowWidth / 2, windowHeight / 2 - 50);
       this.startButton.html("다시 시작");
       this.startButton.show();
     }
@@ -140,9 +140,9 @@ class ChatBot {
     fill(0);
     textSize(60);
     textAlign(CENTER);
-    text("챗봇 게임에 오신 것을 환영합니다!", width / 2, height / 2 - 50);
+    text("챗봇 게임에 오신 것을 환영합니다!",windowWidth / 2, windowHeight / 2 - 50);
     textSize(40);
-    text("게임 시작 버튼을 눌러주세요", width / 2, height / 2 + 50);
+    text("게임 시작 버튼을 눌러주세요", windowWidth / 2, windowHeight / 2 + 50);
   }
 
   sendMessage() {
@@ -156,7 +156,7 @@ class ChatBot {
       this.currentInputIndex++; // 다음 입력해야 할 텍스트로 이동    
       this.resetTimer(); // 타이머 리셋
     } else {
-      text(this.expectedInputs[this.currentInputIndex], width / 2, height - 50);
+      text(this.expectedInputs[this.currentInputIndex], windowWidth / 2, windowHeight - 50);
     }
 
     // 채팅 수가 도합 5개를 넘으면 가장 오래된 채팅부터 사라짐
