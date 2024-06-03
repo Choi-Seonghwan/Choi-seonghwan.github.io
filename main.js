@@ -150,7 +150,7 @@ function draw() {
   }
   console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
 
-  if (device == 'Mobile') {
+  if (device == 'Computer') {
 
   // 카메라 위치를 업데이트
   camera.update(shared.slime);
