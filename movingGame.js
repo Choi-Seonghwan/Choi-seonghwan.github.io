@@ -104,10 +104,10 @@ class MovingGame {
     //화면에 방향키 띄우기
     drawDirections() {
         fill(0);
-      textSize(32);
+      textSize(100);
       textAlign(CENTER, CENTER);
       for (let i = 0; i < this.currentDirections.length; i++) {
-        text(this.getArrowSymbol(this.currentDirections[i]), shared.slime.x + (i - this.currentDirections.length / 2) * 50, shared.slime.y);
+        text(this.getArrowSymbol(this.currentDirections[i]), shared.slime.x + (i - this.currentDirections.length / 2) * 80, shared.slime.y);
       }
     }
     //화면에 타이머 띄우기

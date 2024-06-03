@@ -78,6 +78,9 @@ let totalDegY;
 function preload() {
   // 이미지 로드
 // playerImgs = loadImage('assets/playerAnim0.png');
+
+  dungGeunMoFont = loadFont('fonts/DungGeunMo.otf');
+
   for (let i =0; i < 5; i++){
     playerImgs[i] = loadImage("assets/playerAnim"+i+".png");
   }
@@ -102,6 +105,8 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   // createCanvas(windowWidth,windowHeight);
   noStroke();
+
+  textFont(dungGeunMoFont);
 
   shared.slime = new Player(playerInitX, playerInitY);
   camera = new Camera();
@@ -144,9 +149,8 @@ function draw() {
     }
   }
   console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
-  console.log(movingGame.startTime);
-  console.log(millis());
-  if (device == 'Computer') {
+
+  if (device == 'Mobile') {
 
   // 카메라 위치를 업데이트
   camera.update(shared.slime);
@@ -236,11 +240,16 @@ function draw() {
     fill('#ffcccc');
     rect(0,0,windowWidth,windowHeight);
     fill(0);
+    stroke(0);
+    line(0,windowHeight/4,windowWidth,windowHeight/4);
+    line(0,windowHeight/2,windowWidth,windowHeight/2);
+    line(0,windowHeight/4 * 3,windowWidth,windowHeight/4 * 3);
+    line(0,windowHeight,windowWidth,windowHeight);
     textSize(50);
     textAlign(CENTER, CENTER);
     text(shared.moveStop, windowWidth/2, windowHeight/4);
 
-    if (shared.moveStop == true) {
+    if (shared.moveStop) {
       textAlign(CENTER, CENTER);
       switch(shared.zone) {
         case 0:
@@ -276,19 +285,19 @@ function draw() {
 function keyPressed() {
 
   //맵 인터렉션
-  if (keyCode === 81) {
-    activeTrigger = gameMap.checkTriggers(shared.slime);
-    if (activeTrigger) {
-      shared.moveStop = !shared.moveStop;
-    }
+  // if (keyCode === 81) {
+  //   activeTrigger = gameMap.checkTriggers(shared.slime);
+  //   if (activeTrigger) {
+  //     shared.moveStop = !shared.moveStop;
+  //   }
 
-    if (!shared.moveStop) {
-      switch (shared.zone) {
-        case 1:
-          movingGame.resetGame();
-      }
-    }
-  }
+  //   if (!shared.moveStop) {
+  //     switch (shared.zone) {
+  //       case 1:
+  //         movingGame.resetGame();
+  //     }
+  //   }
+  // }
 
   switch (keyCode) {
     case 87:
@@ -328,5 +337,22 @@ function mousePressed() {
     movingGame.handleKeyPressed();
   } else {
     console.error("game.handleKeyPressed is not a function or game is not defined");
+  }
+
+  if (device == 'Mobile') {
+
+  } else {
+    if (mouseX > 0 && mouseX < windowWidth && mouseY > 0 && mouseY < windowHeight / 4) {
+      activeTrigger = gameMap.checkTriggers(shared.slime);
+      if (activeTrigger) {
+        shared.moveStop = !shared.moveStop;
+      }
+      if (!shared.moveStop) {
+        switch (shared.zone) {
+          case 1:
+            movingGame.resetGame();
+        }
+      }
+    }
   }
 }
