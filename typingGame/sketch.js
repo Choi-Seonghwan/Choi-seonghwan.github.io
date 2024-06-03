@@ -168,7 +168,7 @@ class ChatBot {
 
   resetTimer() {
     this.timerStart = millis(); // 타이머 리셋
-    this.timeLimit = 10000; // 타이머 제한 시간 (20초)
+    this.timeLimit = 20000; // 타이머 제한 시간 (20초)
   }
 
   gameOver() {
