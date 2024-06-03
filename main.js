@@ -186,18 +186,15 @@ function draw() {
       textAlign(CENTER, CENTER);
       text(activeTrigger.message, shared.slime.x, shared.slime.y - 45);
       if (shared.moveStop) {
-
-        switch(activeTrigger.message) {
-          case "spawn zone \n press Q to interact":
+        switch(shared.zone) {
+          case 0:
             rectMode(CENTER);
             rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
-            text('Spawn Zone', shared.slime.x, shared.slime.y)
-            shared.zone = 0;     
+            text('Spawn Zone', shared.slime.x, shared.slime.y)   
             break;
-          case "zone 1":
-            shared.zone = 1; 
+          case 1:
             fill(255);
             rectMode(CENTER);
             rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
@@ -205,51 +202,50 @@ function draw() {
             movingGame.draw();
             movingGame.degmatch();   
             break;
-          case "zone 2":
+          case 2:
             rectMode(CENTER);
             rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
-            text('Zone 2', shared.slime.x, shared.slime.y) 
-            shared.zone = 2;    
+            text('Zone 2', shared.slime.x, shared.slime.y)    
             break;
-          case "zone 3":
+          case 3:
             rectMode(CENTER);
             rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
-            text('Zone 3', shared.slime.x, shared.slime.y)  
-            shared.zone = 3;   
+            text('Zone 3', shared.slime.x, shared.slime.y)   
             break;
-          case "zone 4":
+          case 4:
             rectMode(CENTER);
             rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
             fill(255);
             textSize(50);
             text('Zone 4', shared.slime.x, shared.slime.y)   
-            shared.zone = 4;  
             break;
         }
-      } else {
+      } else { // 미니게임 창이 꺼지면 초기화
         movingGame.resetGame();
       }
     }
-    textSize(50);
-    fill(0);
-    text(radians(rotationX), windowWidth/2, windowHeight/2);
   } else {
     rectMode(CORNER);
     fill('#ffcccc');
     rect(0,0,windowWidth,windowHeight);
     fill(0);
     stroke(0);
-    line(0,windowHeight/4,windowWidth,windowHeight/4);
-    line(0,windowHeight/2,windowWidth,windowHeight/2);
-    line(0,windowHeight/4 * 3,windowWidth,windowHeight/4 * 3);
+    line(0,windowHeight/5,windowWidth,windowHeight/5);
+    line(0,windowHeight/5 * 2,windowWidth,windowHeight/5 * 2);
+    line(0,windowHeight/5 * 3,windowWidth,windowHeight/5 * 3);
+    line(0,windowHeight/5 * 4,windowWidth,windowHeight/5 * 4);
     line(0,windowHeight,windowWidth,windowHeight);
     textSize(50);
     textAlign(CENTER, CENTER);
-    text(shared.moveStop, windowWidth/2, windowHeight/4);
+    text("Spawn Zone", windowWidth/2, windowHeight/10);
+    text("Zone 1", windowWidth/2, windowHeight/5 * 1.5);
+    text("Zone 2", windowWidth/2, windowHeight/5 * 2.5);
+    text("Zone 3", windowWidth/2, windowHeight/5 * 3.5);
+    text("Zone 4", windowWidth/2, windowHeight/5 * 4.5);
 
     if (shared.moveStop) {
       textAlign(CENTER, CENTER);
@@ -257,27 +253,27 @@ function draw() {
         case 0:
           fill(255);
           textSize(50);
-          text('Spawn Zone', windowWidth/2, windowHeight/2)     
+          text("Spawn Zone", windowWidth/2, windowHeight/10);   
           break;
         case 1:
           fill(255);
           textSize(50);
-          text('Zone 1', windowWidth/2, windowHeight/2)     
+          text("Zone 1", windowWidth/2, windowHeight/5 * 1.5); 
           break;
         case 2:
           fill(255);
           textSize(50);
-          text('Zone 2', windowWidth/2, windowHeight/2)     
+          text("Zone 2", windowWidth/2, windowHeight/5 * 2.5);    
           break;
         case 3:
           fill(255);
           textSize(50);
-          text('Zone 3', windowWidth/2, windowHeight/2)     
+          text("Zone 3", windowWidth/2, windowHeight/5 * 3.5);    
           break;
         case 4:
           fill(255);
           textSize(50);
-          text('Zone 4', windowWidth/2, windowHeight/2)     
+          text("Zone 4", windowWidth/2, windowHeight/5 * 4.5);     
           break;
       }
     } 
@@ -347,11 +343,38 @@ function touchStarted() {
 
   } else {
     for (let touch of touches) {
-      if (touch.x > 0 && touch.x < windowWidth && touch.y > 0 && touch.y < windowHeight / 4) {
-        activeTrigger = gameMap.checkTriggers(shared.slime);
-        if (activeTrigger) {
-          shared.moveStop = !shared.moveStop;
-        }
+      activeTrigger = gameMap.checkTriggers(shared.slime);
+      switch (activeTrigger.message) {
+        case "spawn zone \n press Q to interact":
+          if (touch.x > 0 && touch.x < windowWidth && touch.y > 0 && touch.y < windowHeight / 5) {
+            shared.moveStop = !shared.moveStop;
+            shared.zone = 0;
+          }
+          break;
+        case "zone 1":
+          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 && touch.y < windowHeight / 5 * 2) {
+            shared.moveStop = !shared.moveStop;
+            shared.zone = 1;
+          }
+          break;
+        case "zone 2":
+          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 * 2 && touch.y < windowHeight / 5 * 3) {
+            shared.moveStop = !shared.moveStop;
+            shared.zone = 2;
+          }
+          break;
+        case "zone 3":
+          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 * 3 && touch.y < windowHeight / 5 * 4) {
+            shared.moveStop = !shared.moveStop;
+            shared.zone = 3;
+          }
+          break;
+        case "zone 4":
+          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 * 4 && touch.y < windowHeight) {
+            shared.moveStop = !shared.moveStop;
+            shared.zone = 4;
+          }
+          break;
       }
     }
   }
