@@ -10,7 +10,7 @@ canvas {
 
 @font-face {
   font-family: 'DungGeunMo';
-  src: url('fonts/DungGeunMo.otf') format('opentype');
+  src: url('fonts/Galmuri7.ttf') format('truetype');
 }
 
 input, button {

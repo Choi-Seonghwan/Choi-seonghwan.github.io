@@ -3,7 +3,7 @@ let buttonStart, buttonStartOver, buttonStartPressed;
 let chatBot;
 
 function preload() {
-  dungGeunMoFont = loadFont('fonts/DungGeunMo.otf');
+  dungGeunMoFont = loadFont('fonts/Galmuri7.ttf');
   buttonStart = loadImage('buttons/buttonStart.png');
   buttonStartOver = loadImage('buttons/buttonStartOver.png');
   buttonStartPressed = loadImage('buttons/buttonStartPressed.png');
