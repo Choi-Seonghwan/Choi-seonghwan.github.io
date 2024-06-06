@@ -56,7 +56,7 @@ function cb(event) {
     me.degX = radians(event.beta);
     console.log("degX:", me.degX);
   }
-  // party.js와 동기화
+  // Sync with party.js
   partySetShared(me);
   console.log("Shared me:", me);
 }
@@ -69,8 +69,9 @@ function preload() {
   );
   shared = partyLoadShared("shared", { x: 100, y: 100 });
   guests = partyLoadGuestShareds();
-  me = partyLoadMyShared({ degX: 0, degY: 0 }); // degX, degY 추가
+  me = partyLoadMyShared({ degX: 0, degY: 0 });
   console.log("me initialized:", me);
+
   dungGeunMoFont = loadFont('fonts/DungGeunMo.otf');
 
   buttonStart = loadImage('buttons/buttonStart.png');
@@ -83,7 +84,7 @@ function preload() {
   buttonCloseOver = loadImage('buttons/buttonCloseOver.png');
   buttonClosePressed = loadImage('buttons/buttonClosePressed.png');
 
-  boostIntroBg = loadImage('assets/boost/boostIntroBg.png'); // 시작화면 배경 이미지 추가
+  boostIntroBg = loadImage('assets/boost/boostIntroBg.png');
   boostImgBg = loadImage('assets/boost/boostBg.png');
   for (i = 0; i < 5; i++) {
     boostImgs[i] = loadImage('assets/boost/boost' + i + '.png');
@@ -109,32 +110,31 @@ function setup() {
   game = new MovingGame();
   totalDegX = 0;
   totalDegY = 0;
+
+  // 엔터키 이벤트 핸들러 추가
+  window.addEventListener('keydown', handleKeyDown);
 }
 
 function draw() {
-  // background(150);
-  totalDegX = 0; // 합산된 회전 값을 초기화
+  totalDegX = 0;
   totalDegY = 0;
   for (let i = 0; i < guests.length; i++) {
     if (guests[i] && guests[i].degX !== undefined && guests[i].degY !== undefined) {
-      totalDegX += guests[i].degX; // 각 게스트의 X축 기울기를 합산
-      totalDegY += guests[i].degY; // 각 게스트의 Y축 기울기를 합산
+      totalDegX += guests[i].degX;
+      totalDegY += guests[i].degY;
     }
   }
   console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
   game.update();
   game.draw(totalDegX, totalDegY);
-  game.degmatch(totalDegX, totalDegY);
+}
 
-  /* 각도 디버깅용 텍스트
-  textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-  textSize(32);
-  fill("#000066"); // 텍스트 색상 설정
-  text(totalDegX.toFixed(2) + " DegX", width / 2, height / 2 - 30); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
-  text(totalDegY.toFixed(2) + " DegY", width / 2, height / 2);
-  textSize(24);
-  text(lastDirectionText, width / 2, height / 2 + 50);
-  */
+// 엔터키 이벤트 핸들러
+function handleKeyDown(event) {
+  if (event.key === 'Enter') {
+    console.log("Enter key pressed");
+    game.degmatch(totalDegX, totalDegY);
+  }
 }
 
 class MovingGame {
@@ -143,13 +143,13 @@ class MovingGame {
     this.currentDirections = [];
     this.round = 1;
     this.maxRounds = 5;
-    this.baseTimeLimit = 30000; // 기본 30초
+    this.baseTimeLimit = 30000;
     this.startTime = 0;
     this.gameOver = false;
     this.gameStarted = false;
     this.success = false;
     this.restartButton = createButton('Restart');
-    this.restartButton.position(width / 2 -100, height -200);
+    this.restartButton.position(width / 2 - 100, height - 200);
     this.restartButton.size(100, 50);
     this.restartButton.mousePressed(() => this.resetGame());
     this.restartButton.hide();
@@ -162,7 +162,6 @@ class MovingGame {
   }
 
   startNewRound() {
-    // 만약 라운드가 다 달성되면 게임이 종료되고 재시작 버튼이 나옴
     if (this.round > this.maxRounds) {
       this.success = true;
       this.gameOver = true;
@@ -178,12 +177,12 @@ class MovingGame {
   }
 
   randomDirection() {
-    const directions = ['UP', 'LEFT', 'DOWN', 'RIGHT'];  //string으로 direction을 저장
+    const directions = ['UP', 'LEFT', 'DOWN', 'RIGHT'];
     return random(directions);
   }
 
   getTimeLimit() {
-    return this.baseTimeLimit + this.round * 1000; // 라운드마다 1초 추가
+    return this.baseTimeLimit + this.round * 1000;
   }
 
   update() {
@@ -191,14 +190,13 @@ class MovingGame {
       return;
     }
 
-    // 시간 초과시 게임오버 및 재시작 버튼 등장
     if (millis() - this.startTime > this.getTimeLimit()) {
       this.gameOver = true;
     }
   }
 
-  draw(storedDegX,storedDegY) {
-    background(220,0);
+  draw(storedDegX, storedDegY) {
+    background(220, 0);
 
     if (!this.gameStarted) {
       this.drawStartScreen();
@@ -214,43 +212,31 @@ class MovingGame {
       return;
     }
 
-    //배경화면 이미지
     image(boostImgBg, 0, 0, 800, 600);
-    //엔터누를때 버튼 누르는 이미지
-    let boostButtonPressed = 0
+    let boostButtonPressed = 0;
     if (keyIsPressed === true && keyCode === ENTER) boostButtonPressed = 1;
     else boostButtonPressed = 0;
     image(boostButtonImgs[boostButtonPressed], 0, 0, 800, 600);
 
-    //부스터 방향 이미지
     let boostDirection = 0;
     if (storedDegY > 0.5) {
-      boostDirection = 4 //'RIGHT';
+      boostDirection = 4;
     } else if (storedDegY < -0.5) {
-      boostDirection = 3 //'LEFT';
+      boostDirection = 3;
     } else if (storedDegX > 0.5) {
-      boostDirection = 2 //'DOWN';
+      boostDirection = 2;
     } else if (storedDegX < -0.5) {
-      boostDirection = 1 //'UP';
+      boostDirection = 1;
     }
-  
 
     image(boostImgs[boostDirection], 0, 0, 800, 600);
 
-
-
-    //방향키 화면에 띄우기
     this.drawDirections();
-    //타이머 화면에 띄우기
     this.drawTimer();
   }
 
-  //게임시작시 화면
   drawStartScreen() {
-    image(boostIntroBg, 0, 0, 800, 600); // 시작화면 배경 이미지 그리기
-    // textSize(32);
-    // textAlign(CENTER, CENTER);
-    // text('Press any key to start', width / 2, height / 2 - 100);
+    image(boostIntroBg, 0, 0, 800, 600);
     let img;
     if (this.isButtonPressed) {
       img = buttonStartPressed;
@@ -260,20 +246,13 @@ class MovingGame {
       img = buttonStart;
     }
     noSmooth();
-    imageMode(CENTER)
+    imageMode(CENTER);
     image(img, width / 2, height * 5 / 6, 200, 87.5);
-    imageMode(CORNER)
+    imageMode(CORNER);
   }
 
   drawGameOverScreen() {
-    // textSize(32);
-    // textAlign(CENTER, CENTER);
-    // text('Times Up! You Lost!', width / 2, height / 2 - 40);
-
-    image(gameoverBg,0,0,800,600);
-
-    // this.restartButton.show();
-
+    image(gameoverBg, 0, 0, 800, 600);
     let img;
     if (this.isButtonPressedAgain) {
       img = buttonAgainPressed;
@@ -282,22 +261,13 @@ class MovingGame {
     } else {
       img = buttonAgain;
     }
-
-    imageMode(CENTER)
+    imageMode(CENTER);
     image(img, width / 2, height * 5 / 6, 200, 87.5);
-    imageMode(CORNER)
+    imageMode(CORNER);
   }
 
   drawSuccessScreen() {
-    // textSize(32);
-    // textAlign(CENTER, CENTER);
-    // text('Congratulations! You Won!', width / 2, height / 2 - 40);
-
-    image(successBg,0,0,800,600);
-
-
-    // this.restartButton.show();
-
+    image(successBg, 0, 0, 800, 600);
     let img;
     if (this.isButtonPressedClose) {
       img = buttonClosePressed;
@@ -306,12 +276,11 @@ class MovingGame {
     } else {
       img = buttonClose;
     }
-    imageMode(CENTER)
+    imageMode(CENTER);
     image(img, width / 2, height * 5 / 6, 200, 87.5);
-    imageMode(CORNER)
+    imageMode(CORNER);
   }
 
-  //화면에 방향키 띄우기
   drawDirections() {
     textSize(100);
     fill('#A6E31E');   
@@ -319,25 +288,22 @@ class MovingGame {
     strokeWeight(10);
     textAlign(CENTER, CENTER);
     for (let i = 0; i < this.currentDirections.length; i++) {
-      text(this.getArrowSymbol(this.currentDirections[i]), width / 2 + (i - this.currentDirections.length /2)*100+50, height * 1 / 6);
+      text(this.getArrowSymbol(this.currentDirections[i]), width / 2 + (i - this.currentDirections.length / 2) * 100 + 50, height * 1 / 6);
     }
     textSize(32);
   }
-  //화면에 타이머 띄우기
+
   drawTimer() {
     let elapsedTime = millis() - this.startTime;
     let timerWidth = map(elapsedTime, 150, this.getTimeLimit(), width, 0);
-
 
     fill('#31293d');
     stroke('#31293d');
     strokeWeight(5);
     rect(50, height - 64, width - 100, 20);
     noStroke();
-    noStroke();
     fill('#A6E31E');
-    rect(50, height - 62, timerWidth - 100, 16); // 레트로 스타일 타이머 막대
-    
+    rect(50, height - 62, timerWidth - 100, 16);
   }
 
   handleKeyPressed() {
@@ -352,19 +318,6 @@ class MovingGame {
     }
   }
 
-  //방향키대로 기울이는지 확인
-  /*degmatch() {
-    let inputDirection = null;
-    if (totalDegY > 1) {
-      inputDirection = 'RIGHT';
-    } else if (totalDegY < -1) {
-      inputDirection = 'LEFT';
-    } else if (totalDegX > 1) {
-      inputDirection = 'DOWN';
-    } else if (totalDegX < -1) {
-      inputDirection = 'UP';
-    }*/
-
   degmatch(storedDegX, storedDegY) {
     let inputDirection = null;
     fill(0);
@@ -378,9 +331,8 @@ class MovingGame {
       inputDirection = 'UP';
     }
 
-    // 첫 번째 방향과 현재 방향을 비교하여 일치하면 첫 번째 방향만 제거
     if (inputDirection && this.currentDirections.length > 0 && inputDirection === this.currentDirections[0]) {
-      this.currentDirections.shift(); // 첫 번째 방향만 제거
+      this.currentDirections.shift();
       console.log("Input matched:", inputDirection, "Remaining directions:", this.currentDirections);
       if (this.currentDirections.length === 0) {
         this.round++;
@@ -391,7 +343,6 @@ class MovingGame {
     }
   }
 
-  //리셋게임
   resetGame() {
     this.round = 1;
     this.gameOver = false;
@@ -401,7 +352,6 @@ class MovingGame {
     this.startNewRound();
   }
 
-  //입력한 방향을 방향키로 적용하는 함수
   getArrowSymbol(direction) {
     switch (direction) {
       case 'UP':
@@ -415,7 +365,6 @@ class MovingGame {
     }
   }
 }
-
 
 function mousePressed() {
   if (game && typeof game.handleKeyPressed === 'function') {
@@ -465,4 +414,5 @@ function mouseMoved() {
     game.isButtonOverClose = false;
   }
 }
+
 
