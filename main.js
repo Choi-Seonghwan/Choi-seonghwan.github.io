@@ -75,6 +75,7 @@ function preload() {
   me = partyLoadMyShared({ degX: 0, degY: 0 });
   console.log("me initialized:", me);
 
+
   dungGeunMoFont = loadFont('fonts/DungGeunMo.otf');
 
   buttonStart = loadImage('buttons/buttonStart.png');
@@ -113,9 +114,6 @@ function setup() {
   game = new MovingGame();
   totalDegX = 0;
   totalDegY = 0;
-
-  // 엔터키 이벤트 핸들러 추가
-  window.addEventListener('keydown', handleKeyDown);
 }
 
 function draw() {
@@ -177,7 +175,6 @@ class MovingGame {
     this.success = false;
     this.restartButton = createButton('Restart');
     this.restartButton.position(width / 2 - 100, height - 200);
-    this.restartButton.position(width / 2 - 100, height - 200);
     this.restartButton.size(100, 50);
     this.restartButton.mousePressed(() => this.resetGame());
     this.restartButton.hide();
@@ -210,7 +207,7 @@ class MovingGame {
   }
 
   getTimeLimit() {
-    return this.baseTimeLimit + this.round * 1000;
+    return this.baseTimeLimit + this.round * 1000; // 라운드마다 1초 추가
   }
 
   update() {
@@ -223,10 +220,8 @@ class MovingGame {
     }
   }
 
-  draw(storedDegX, storedDegY) {
-    background(220, 0);
-  draw(storedDegX, storedDegY) {
-    background(220, 0);
+  draw(storedDegX,storedDegY) {
+    background(220,0);
 
     if (!this.gameStarted) {
       this.drawStartScreen();
@@ -384,6 +379,7 @@ class MovingGame {
       inputDirection = 'UP';
     }
 
+    // 첫 번째 방향과 현재 방향을 비교하여 일치하면 첫 번째 방향만 제거
     if (inputDirection && this.currentDirections.length > 0 && inputDirection === this.currentDirections[0]) {
       this.currentDirections.shift();
       console.log("Input matched:", inputDirection, "Remaining directions:", this.currentDirections);
