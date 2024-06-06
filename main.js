@@ -1,147 +1,120 @@
-//p5.party 기본
 let shared;
-let me;
+let clickCount;
 let guests;
-
-let sumDeg = 0;
-
-//game Map & character
-let gameMap;
-let camera;
-let mapWidth = 1600;
-let mapHeight = 1200;
-let playerImgs = [];
-let currentPlayerImgFrame = 0;
-let currentPlayerImg;
-let mapImg;
-
-let playerInitX = 800;
-let playerInitY = 600;
-
-// zone trigger
-let keyPressedTrigger = false;
-let activeTrigger = null;
-
-// device classification
-let device;
-
-//moving game
-let movingGame;
+let me;
+let game;
 let totalDegX;
 let totalDegY;
+let lastDirectionText = "";
+let boostIntroBg;
+let buttonStart, buttonStartOver, buttonStartPressed;
+let buttonAgain, buttonAgainOver, buttonAgainPressed;
+let buttonClose, buttonCloseOver, buttonClosePressed;
 
-// document.addEventListener("DOMContentLoaded", function() {
-//   const activateButton = document.getElementById('activateButton');
-//   if (activateButton) {
-//     activateButton.addEventListener('click', onClick);
-//   } else {
-//     console.error("Activate button not found.");
-//   }
-// });
+let boostImgBg;
+let boostImgs = [];
+let boostButtonImgs = [];
+let successBg, gameoverBg;
 
-// function onClick() {
-//   console.log("Activate button clicked");
-//   if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-//     DeviceOrientationEvent.requestPermission()
-//       .then(permissionState => {
-//         if (permissionState === 'granted') {
-//           console.log("Permission granted");
-//           window.addEventListener('deviceorientation', cb);
-//         } else {
-//           console.log("Permission denied");
-//         }
-//       })
-//       .catch(error => {
-//         console.error("Error requesting permission:", error);
-//       });
-//   } else {
-//     console.log("DeviceOrientationEvent.requestPermission is not a function");
-//     window.addEventListener('deviceorientation', cb);
-//   }
-// }
-
-// function cb(event) {
-//   console.log("Device orientation event triggered");
-//   if (event.gamma !== null) {
-//     me.degY = radians(event.gamma);
-//     console.log("degY:", me.degY);
-//   }
-//   if (event.beta !== null) {
-//     me.degX = radians(event.beta);
-//     console.log("degX:", me.degX);
-//   }
-//   // party.js와 동기화
-//   partySetShared(me);
-//   console.log("Shared me:", me);
-// }
-
-function preload() {
-  // 이미지 로드
-// playerImgs = loadImage('assets/playerAnim0.png');
-
-  dungGeunMoFont = loadFont('fonts/DungGeunMo.otf');
-
-  for (let i =0; i < 5; i++){
-    playerImgs[i] = loadImage("assets/playerAnim"+i+".png");
+document.addEventListener("DOMContentLoaded", function () {
+  const activateButton = document.getElementById('activateButton');
+  if (activateButton) {
+    activateButton.addEventListener('click', onClick);
+  } else {
+    console.error("Activate button not found.");
   }
-  currentPlayerImg = playerImgs[0]
+});
 
-  mapImg = loadImage('assets/map320_240(2).png');
-
-  partyConnect(
-		"wss://demoserver.p5party.org", 
-		"slime_map"
-	);
-
-  shared = partyLoadShared("shared");
-  me = partyLoadMyShared({ degX: 0, degY: 0}, console.log("my object is called!"));
-  guests = partyLoadGuestShareds(console.log("guests shared!"));
-
+function onClick() {
+  console.log("Activate button clicked");
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          console.log("Permission granted");
+          window.addEventListener('deviceorientation', cb);
+        } else {
+          console.log("Permission denied");
+        }
+      })
+      .catch(error => {
+        console.error("Error requesting permission:", error);
+      });
+  } else {
+    console.log("DeviceOrientationEvent.requestPermission is not a function");
+    window.addEventListener('deviceorientation', cb);
+  }
 }
 
+function cb(event) {
+  console.log("Device orientation event triggered");
+  if (event.gamma !== null) {
+    me.degY = radians(event.gamma);
+    console.log("degY:", me.degY);
+  }
+  if (event.beta !== null) {
+    me.degX = radians(event.beta);
+    console.log("degX:", me.degX);
+  }
+  // party.js와 동기화
+  partySetShared(me);
+  console.log("Shared me:", me);
+}
 
+function preload() {
+  console.log("preload called");
+  partyConnect(
+    "wss://demoserver.p5party.org",
+    "party_circle"
+  );
+  shared = partyLoadShared("shared", { x: 100, y: 100 });
+  guests = partyLoadGuestShareds();
+  me = partyLoadMyShared({ degX: 0, degY: 0 }); // degX, degY 추가
+  console.log("me initialized:", me);
+  dungGeunMoFont = loadFont('fonts/DungGeunMo.otf');
+
+  buttonStart = loadImage('buttons/buttonStart.png');
+  buttonStartOver = loadImage('buttons/buttonStartOver.png');
+  buttonStartPressed = loadImage('buttons/buttonStartPressed.png');
+  buttonAgain = loadImage('buttons/buttonAgain.png');
+  buttonAgainOver = loadImage('buttons/buttonAgainOver.png');
+  buttonAgainPressed = loadImage('buttons/buttonAgainPressed.png');
+  buttonClose = loadImage('buttons/buttonClose.png');
+  buttonCloseOver = loadImage('buttons/buttonCloseOver.png');
+  buttonClosePressed = loadImage('buttons/buttonClosePressed.png');
+
+  boostIntroBg = loadImage('assets/boost/boostIntroBg.png'); // 시작화면 배경 이미지 추가
+  boostImgBg = loadImage('assets/boost/boostBg.png');
+  for (i = 0; i < 5; i++) {
+    boostImgs[i] = loadImage('assets/boost/boost' + i + '.png');
+  }
+  boostButtonImgs[0] = loadImage('assets/boost/boostButton0.png');
+  boostButtonImgs[1] = loadImage('assets/boost/boostButton1.png');
+
+  successBg = loadImage('assets/successBg.png');
+  gameoverBg = loadImage('assets/gameoverBg.png');
+}
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  // createCanvas(windowWidth,windowHeight);
+  console.log("setup called");
+  createCanvas(800, 600);
   noStroke();
-
   textFont(dungGeunMoFont);
 
-  shared.slime = new Player(playerInitX, playerInitY);
-  camera = new Camera();
-  gameMap = new GameMap(mapWidth, mapHeight, mapImg);
-
-  shared.test = 10;
-  shared.zone = 0;
-
   if (partyIsHost()) {
-    console.log("slime online!")
+    shared.x = 200;
+    shared.y = 200;
   }
 
-  console.log(radians(rotationX));
-
-  if (radians(rotationX) == 0) {
-    device = 'Computer'
-  } else {
-    device = 'Mobile'
-  }
-
-  movingGame = new MovingGame();
+  game = new MovingGame();
   totalDegX = 0;
   totalDegY = 0;
 }
 
 function draw() {
-  background(60);
-  //scale(0.5) //전체맵 확인용 스케일
-
-  me.degX = rotationX;
-  me.degY = rotationY;
-
+  // background(150);
   totalDegX = 0; // 합산된 회전 값을 초기화
   totalDegY = 0;
-
   for (let i = 0; i < guests.length; i++) {
     if (guests[i] && guests[i].degX !== undefined && guests[i].degY !== undefined) {
       totalDegX += guests[i].degX; // 각 게스트의 X축 기울기를 합산
@@ -149,233 +122,347 @@ function draw() {
     }
   }
   console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
+  game.update();
+  game.draw(totalDegX, totalDegY);
+  game.degmatch(totalDegX, totalDegY);
 
-  if (device == 'Computer') {
+  /* 각도 디버깅용 텍스트
+  textAlign(CENTER, CENTER); // 텍스트 정렬 설정
+  textSize(32);
+  fill("#000066"); // 텍스트 색상 설정
+  text(totalDegX.toFixed(2) + " DegX", width / 2, height / 2 - 30); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
+  text(totalDegY.toFixed(2) + " DegY", width / 2, height / 2);
+  textSize(24);
+  text(lastDirectionText, width / 2, height / 2 + 50);
+  */
+}
 
-  // 카메라 위치를 업데이트
-  camera.update(shared.slime);
-
-  // 카메라 적용
-  camera.apply();
-  
-  gameMap.display();
-
-  me.rotateDeg = accelerationX;
-
-  if (frameCount % 5 == 0) {
-    currentPlayerImg = playerImgs[currentPlayerImgFrame++%5];
+class MovingGame {
+  constructor() {
+    this.directions = [];
+    this.currentDirections = [];
+    this.round = 1;
+    this.maxRounds = 5;
+    this.baseTimeLimit = 30000; // 기본 30초
+    this.startTime = 0;
+    this.gameOver = false;
+    this.gameStarted = false;
+    this.success = false;
+    this.restartButton = createButton('Restart');
+    this.restartButton.position(width / 2 -100, height -200);
+    this.restartButton.size(100, 50);
+    this.restartButton.mousePressed(() => this.resetGame());
+    this.restartButton.hide();
+    this.isButtonPressed = false;
+    this.isButtonOver = false;
+    this.isButtonPressedAgain = false;
+    this.isButtonOverAgain = false;
+    this.isButtonPressedClose = false;
+    this.isButtonOverClose = false;
   }
 
-  shared.slime.move(gameMap.obstacles);
+  startNewRound() {
+    // 만약 라운드가 다 달성되면 게임이 종료되고 재시작 버튼이 나옴
+    if (this.round > this.maxRounds) {
+      this.success = true;
+      this.gameOver = true;
+      return;
+    }
 
-  gameMap.displayTriggers();
+    this.directions = [];
+    for (let i = 0; i < 2 * this.round + 3; i++) {
+      this.directions.push(this.randomDirection());
+    }
+    this.currentDirections = [...this.directions];
+    this.startTime = millis();
+  }
 
-  // 트리거 영역에 들어가면 activeTrigger에서 트리거 정보를 리턴한다
-  activeTrigger = gameMap.checkTriggers(shared.slime);
+  randomDirection() {
+    const directions = ['UP', 'LEFT', 'DOWN', 'RIGHT'];  //string으로 direction을 저장
+    return random(directions);
+  }
+
+  getTimeLimit() {
+    return this.baseTimeLimit + this.round * 1000; // 라운드마다 1초 추가
+  }
+
+  update() {
+    if (this.gameOver) {
+      return;
+    }
+
+    // 시간 초과시 게임오버 및 재시작 버튼 등장
+    if (millis() - this.startTime > this.getTimeLimit()) {
+      this.gameOver = true;
+    }
+  }
+
+  draw(storedDegX,storedDegY) {
+    background(220,0);
+
+    if (!this.gameStarted) {
+      this.drawStartScreen();
+      return;
+    }
+
+    if (this.gameOver) {
+      if (this.success) {
+        this.drawSuccessScreen();
+      } else {
+        this.drawGameOverScreen();
+      }
+      return;
+    }
+
+    //배경화면 이미지
+    image(boostImgBg, 0, 0, 800, 600);
+    //엔터누를때 버튼 누르는 이미지
+    let boostButtonPressed = 0
+    if (keyIsPressed === true && keyCode === ENTER) boostButtonPressed = 1;
+    else boostButtonPressed = 0;
+    image(boostButtonImgs[boostButtonPressed], 0, 0, 800, 600);
+
+    //부스터 방향 이미지
+    let boostDirection = 0;
+    if (storedDegY > 0.5) {
+      boostDirection = 4 //'RIGHT';
+    } else if (storedDegY < -0.5) {
+      boostDirection = 3 //'LEFT';
+    } else if (storedDegX > 0.5) {
+      boostDirection = 2 //'DOWN';
+    } else if (storedDegX < -0.5) {
+      boostDirection = 1 //'UP';
+    }
   
-  shared.slime.display(currentPlayerImg);
 
-    // 트리거 영역 안에서 있으면 텍스트가 자동으로 표시되고
-    // 특정 키(Q)를 누르면 (keyPressedTrigger) 특정 행동을 할 수 있다
-    if (activeTrigger) {
-      fill(255);
-      rectMode(CORNER);
-      rect(shared.slime.x - 50, shared.slime.y - 60, 100, 30);
-      fill(0);
-      textSize(10);
-      textAlign(CENTER, CENTER);
-      text(activeTrigger.message, shared.slime.x, shared.slime.y - 45);
-      if (shared.moveStop) {
-        switch(shared.zone) {
-          case 0:
-            rectMode(CENTER);
-            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
-            fill(255);
-            textSize(50);
-            text('Spawn Zone', shared.slime.x, shared.slime.y)   
-            break;
-          case 1:
-            fill(255);
-            rectMode(CENTER);
-            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
-            movingGame.update();
-            movingGame.draw();
-            movingGame.degmatch();   
-            break;
-          case 2:
-            rectMode(CENTER);
-            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
-            fill(255);
-            textSize(50);
-            text('Zone 2', shared.slime.x, shared.slime.y)    
-            break;
-          case 3:
-            rectMode(CENTER);
-            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
-            fill(255);
-            textSize(50);
-            text('Zone 3', shared.slime.x, shared.slime.y)   
-            break;
-          case 4:
-            rectMode(CENTER);
-            rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
-            fill(255);
-            textSize(50);
-            text('Zone 4', shared.slime.x, shared.slime.y)   
-            break;
-        }
-      } else { // 미니게임 창이 꺼지면 초기화
-        movingGame.resetGame();
+    image(boostImgs[boostDirection], 0, 0, 800, 600);
+
+
+
+    //방향키 화면에 띄우기
+    this.drawDirections();
+    //타이머 화면에 띄우기
+    this.drawTimer();
+  }
+
+  //게임시작시 화면
+  drawStartScreen() {
+    image(boostIntroBg, 0, 0, 800, 600); // 시작화면 배경 이미지 그리기
+    // textSize(32);
+    // textAlign(CENTER, CENTER);
+    // text('Press any key to start', width / 2, height / 2 - 100);
+    let img;
+    if (this.isButtonPressed) {
+      img = buttonStartPressed;
+    } else if (this.isButtonOver) {
+      img = buttonStartOver;
+    } else {
+      img = buttonStart;
+    }
+    noSmooth();
+    imageMode(CENTER)
+    image(img, width / 2, height * 5 / 6, 200, 87.5);
+    imageMode(CORNER)
+  }
+
+  drawGameOverScreen() {
+    // textSize(32);
+    // textAlign(CENTER, CENTER);
+    // text('Times Up! You Lost!', width / 2, height / 2 - 40);
+
+    image(gameoverBg,0,0,800,600);
+
+    // this.restartButton.show();
+
+    let img;
+    if (this.isButtonPressedAgain) {
+      img = buttonAgainPressed;
+    } else if (this.isButtonOverAgain) {
+      img = buttonAgainOver;
+    } else {
+      img = buttonAgain;
+    }
+
+    imageMode(CENTER)
+    image(img, width / 2, height * 5 / 6, 200, 87.5);
+    imageMode(CORNER)
+  }
+
+  drawSuccessScreen() {
+    // textSize(32);
+    // textAlign(CENTER, CENTER);
+    // text('Congratulations! You Won!', width / 2, height / 2 - 40);
+
+    image(successBg,0,0,800,600);
+
+
+    // this.restartButton.show();
+
+    let img;
+    if (this.isButtonPressedClose) {
+      img = buttonClosePressed;
+    } else if (this.isButtonOverClose) {
+      img = buttonCloseOver;
+    } else {
+      img = buttonClose;
+    }
+    imageMode(CENTER)
+    image(img, width / 2, height * 5 / 6, 200, 87.5);
+    imageMode(CORNER)
+  }
+
+  //화면에 방향키 띄우기
+  drawDirections() {
+    textSize(100);
+    fill('#A6E31E');   
+    stroke('#31293d');
+    strokeWeight(10);
+    textAlign(CENTER, CENTER);
+    for (let i = 0; i < this.currentDirections.length; i++) {
+      text(this.getArrowSymbol(this.currentDirections[i]), width / 2 + (i - this.currentDirections.length /2)*100+50, height * 1 / 6);
+    }
+    textSize(32);
+  }
+  //화면에 타이머 띄우기
+  drawTimer() {
+    let elapsedTime = millis() - this.startTime;
+    let timerWidth = map(elapsedTime, 150, this.getTimeLimit(), width, 0);
+
+
+    fill('#31293d');
+    stroke('#31293d');
+    strokeWeight(5);
+    rect(50, height - 64, width - 100, 20);
+    noStroke();
+    noStroke();
+    fill('#A6E31E');
+    rect(50, height - 62, timerWidth - 100, 16); // 레트로 스타일 타이머 막대
+    
+  }
+
+  handleKeyPressed() {
+    if (!this.gameStarted) {
+      this.gameStarted = true;
+      this.startNewRound();
+      return;
+    }
+
+    if (this.gameOver) {
+      return;
+    }
+  }
+
+  //방향키대로 기울이는지 확인
+  /*degmatch() {
+    let inputDirection = null;
+    if (totalDegY > 1) {
+      inputDirection = 'RIGHT';
+    } else if (totalDegY < -1) {
+      inputDirection = 'LEFT';
+    } else if (totalDegX > 1) {
+      inputDirection = 'DOWN';
+    } else if (totalDegX < -1) {
+      inputDirection = 'UP';
+    }*/
+
+  degmatch(storedDegX, storedDegY) {
+    let inputDirection = null;
+    fill(0);
+    if (storedDegY > 0.5) {
+      inputDirection = 'RIGHT';
+    } else if (storedDegY < -0.5) {
+      inputDirection = 'LEFT';
+    } else if (storedDegX > 0.5) {
+      inputDirection = 'DOWN';
+    } else if (storedDegX < -0.5) {
+      inputDirection = 'UP';
+    }
+
+    // 첫 번째 방향과 현재 방향을 비교하여 일치하면 첫 번째 방향만 제거
+    if (inputDirection && this.currentDirections.length > 0 && inputDirection === this.currentDirections[0]) {
+      this.currentDirections.shift(); // 첫 번째 방향만 제거
+      console.log("Input matched:", inputDirection, "Remaining directions:", this.currentDirections);
+      if (this.currentDirections.length === 0) {
+        this.round++;
+        this.startNewRound();
+      } else {
+        lastDirectionText = `StoredDegX: ${storedDegX.toFixed(2)}, StoredDegY: ${storedDegY.toFixed(2)}, Direction: ${inputDirection}`;
       }
     }
-  } else {
-    rectMode(CORNER);
-    fill('#ffcccc');
-    rect(0,0,windowWidth,windowHeight);
-    fill(0);
-    stroke(0);
-    line(0,windowHeight/5,windowWidth,windowHeight/5);
-    line(0,windowHeight/5 * 2,windowWidth,windowHeight/5 * 2);
-    line(0,windowHeight/5 * 3,windowWidth,windowHeight/5 * 3);
-    line(0,windowHeight/5 * 4,windowWidth,windowHeight/5 * 4);
-    line(0,windowHeight,windowWidth,windowHeight);
-    textSize(50);
-    textAlign(CENTER, CENTER);
-    text("Spawn Zone", windowWidth/2, windowHeight/10);
-    text("Zone 1", windowWidth/2, windowHeight/5 * 1.5);
-    text("Zone 2", windowWidth/2, windowHeight/5 * 2.5);
-    text("Zone 3", windowWidth/2, windowHeight/5 * 3.5);
-    text("Zone 4", windowWidth/2, windowHeight/5 * 4.5);
+  }
 
-    if (shared.moveStop) {
-      textAlign(CENTER, CENTER);
-      switch(shared.zone) {
-        case 0:
-          fill(255);
-          textSize(50);
-          text("Spawn Zone", windowWidth/2, windowHeight/10);   
-          break;
-        case 1:
-          fill(255);
-          textSize(50);
-          text("Zone 1", windowWidth/2, windowHeight/5 * 1.5); 
-          break;
-        case 2:
-          fill(255);
-          textSize(50);
-          text("Zone 2", windowWidth/2, windowHeight/5 * 2.5);    
-          break;
-        case 3:
-          fill(255);
-          textSize(50);
-          text("Zone 3", windowWidth/2, windowHeight/5 * 3.5);    
-          break;
-        case 4:
-          fill(255);
-          textSize(50);
-          text("Zone 4", windowWidth/2, windowHeight/5 * 4.5);     
-          break;
-      }
-    } 
+  //리셋게임
+  resetGame() {
+    this.round = 1;
+    this.gameOver = false;
+    this.gameStarted = false;
+    this.success = false;
+    this.restartButton.hide();
+    this.startNewRound();
+  }
+
+  //입력한 방향을 방향키로 적용하는 함수
+  getArrowSymbol(direction) {
+    switch (direction) {
+      case 'UP':
+        return '↑';
+      case 'LEFT':
+        return '←';
+      case 'DOWN':
+        return '↓';
+      case 'RIGHT':
+        return '→';
+    }
   }
 }
 
-function keyPressed() {
-
-  //맵 인터렉션
-  // if (keyCode === 81) {
-  //   activeTrigger = gameMap.checkTriggers(shared.slime);
-  //   if (activeTrigger) {
-  //     shared.moveStop = !shared.moveStop;
-  //   }
-
-  //   if (!shared.moveStop) {
-  //     switch (shared.zone) {
-  //       case 1:
-  //         movingGame.resetGame();
-  //     }
-  //   }
-  // }
-
-  switch (keyCode) {
-    case 87:
-      shared.slime.setDirection('up', true);
-      break;
-    case 83:
-      shared.slime.setDirection('down', true);
-      break;
-    case 65:
-      shared.slime.setDirection('left', true);
-      break;
-    case 68:
-      shared.slime.setDirection('right', true);
-      break;
-  }
-}
-
-function keyReleased() {
-  switch (keyCode) {
-    case 87:
-      shared.slime.setDirection('up', false);
-      break;
-    case 83:
-      shared.slime.setDirection('down', false);
-      break;
-    case 65:
-      shared.slime.setDirection('left', false);
-      break;
-    case 68:
-      shared.slime.setDirection('right', false);
-      break;
-  }
-}
 
 function mousePressed() {
-  if (movingGame && typeof movingGame.handleKeyPressed === 'function') {
-    movingGame.handleKeyPressed();
+  if (game && typeof game.handleKeyPressed === 'function') {
+    game.handleKeyPressed();
   } else {
     console.error("game.handleKeyPressed is not a function or game is not defined");
   }
-}
 
-function touchStarted() {
-  if (device == 'Computer') {
+  if (!game.gameStarted && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
+    game.isButtonPressed = true;
+    game.startGame();
+  }
 
-  } else {
-    for (let touch of touches) {
-      activeTrigger = gameMap.checkTriggers(shared.slime);
-      switch (activeTrigger.message) {
-        case "spawn zone \n press Q to interact":
-          if (touch.x > 0 && touch.x < windowWidth && touch.y > 0 && touch.y < windowHeight / 5) {
-            shared.moveStop = !shared.moveStop;
-            shared.zone = 0;
-          }
-          break;
-        case "zone 1":
-          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 && touch.y < windowHeight / 5 * 2) {
-            shared.moveStop = !shared.moveStop;
-            shared.zone = 1;
-          }
-          break;
-        case "zone 2":
-          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 * 2 && touch.y < windowHeight / 5 * 3) {
-            shared.moveStop = !shared.moveStop;
-            shared.zone = 2;
-          }
-          break;
-        case "zone 3":
-          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 * 3 && touch.y < windowHeight / 5 * 4) {
-            shared.moveStop = !shared.moveStop;
-            shared.zone = 3;
-          }
-          break;
-        case "zone 4":
-          if (touch.x > 0 && touch.x < windowWidth && touch.y > windowHeight / 5 * 4 && touch.y < windowHeight) {
-            shared.moveStop = !shared.moveStop;
-            shared.zone = 4;
-          }
-          break;
-      }
-    }
+  if (game.gameOver && !game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
+    game.isButtonPressedAgain = true;
+    game.resetGame();
+  }
+
+  if (game.gameOver && game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
+    game.isButtonPressedClose = true;
+    game.closeGame();
   }
 }
+
+function mouseReleased() {
+  game.isButtonPressed = false;
+  game.isButtonPressedAgain = false;
+  game.isButtonPressedClose = false;
+}
+
+function mouseMoved() {
+  if (!game.gameStarted && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
+    game.isButtonOver = true;
+  } else {
+    game.isButtonOver = false;
+  }
+
+  if (game.gameOver && !game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
+    game.isButtonOverAgain = true;
+  } else {
+    game.isButtonOverAgain = false;
+  }
+
+  if (game.gameOver && game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
+    game.isButtonOverClose = true;
+  } else {
+    game.isButtonOverClose = false;
+  }
+}
+
