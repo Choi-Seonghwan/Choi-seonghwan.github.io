@@ -50,7 +50,7 @@ class Motorgame {
 
     if (this.gameState === "success") {
       // 게임 성공 메시지 그리기
-      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
+      textFont(galmuriFont);
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
