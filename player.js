@@ -13,7 +13,7 @@ class Player {
     let nextX = this.x;
     let nextY = this.y;
 
-    if (shared.moveStop == 0) {
+    if (!shared.moveStop) {
 
       switch (this.lastDirection) {
         case 'up': // setDirection에서 정한 lastDirection이 up이면서 down은 false일 때
