@@ -86,6 +86,9 @@ function preload() {
   // map image load
   mapImg = loadImage('assets/map320_240(2).png');
 
+  // minigame success image load
+  successBg = loadImage("assets/successBg.png");
+
   // motorgame image load
   for (let i = 1; i < 9; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
     motorImgs[i] = loadImage("assets/motor" + i + ".png");

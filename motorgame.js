@@ -49,12 +49,15 @@ class Motorgame {
     }
 
     if (this.gameState === "success") {
+
+      image(successBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 성공 배경 이미지 표시
+
       // 게임 성공 메시지 그리기
-      textFont(galmuriFont);
-      textSize(64);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("게임 성공!", shared.slime.x, shared.slime.y);
+      // textFont(galmuriFont);
+      // textSize(64);
+      // fill(0);
+      // textAlign(CENTER, CENTER);
+      // text("게임 성공!", shared.slime.x, shared.slime.y);
 
       // // 다시 도전 버튼 그리기
       // this.drawRetryButton();
