@@ -3,6 +3,10 @@ html, body {
   padding: 0;
 }
 
+input{
+  font-size: 30px;
+}
+
 canvas {
   display: block;
 }
