@@ -25,6 +25,7 @@ function onClick() {
 }
 
 // devicemotion 이벤트 콜백 함수
+let lastGamma = null; // 이전 gamma 값을 저장
 function cb(event) {
   console.log("eventmotor");
   const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
@@ -67,4 +68,18 @@ function cb(event) {
   }
 
   console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
+
+  if (event.gamma !== null) {
+    if (lastGamma !== null) {
+      let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
+      if (deltaGamma > 180) {
+        deltaGamma -= 360; // 기기가 회전한 방향 보정
+      } else if (deltaGamma < -180) {
+        deltaGamma += 360;
+      }
+      totalDeg += radians(deltaGamma); // 차이를 누적하여 총 회전각에 추가
+    }
+    lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
+    me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
+  }
 }

@@ -21,7 +21,7 @@ let playerInitY = 600;
 
 let mapMouseX, mapMouseY;
 
-let progress = 0;
+let progress = 2; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 
 // zone trigger
 let keyPressedTrigger = false;
@@ -34,6 +34,33 @@ let device;
 let chatIntroImg;
 let chatBgImg;
 let chatPfpPurple, chatPfpMe;
+
+// screw game
+let screwGame;
+let checkpointPassed = [false, false, false]; // 체크포인트 통과 여부를 저장
+let rotationCount = 0; // 회전 수를 저장
+let screwImgs = new Array(8);
+let screwSelectedImgs = new Array(8);
+let screwBgImg;
+let screwIntroImg;
+
+let centerX, centerY;
+let totalDeg, pTotalDeg;
+let halfCount = 0
+let count = 0;
+let pCount
+let pANum = 0;
+let areaNum = 0;
+let clockWise = {
+  1: false,
+  2: false,
+  3: false,
+};
+let antiClockWise = {
+  1: false,
+  2: false,
+  3: false,
+};
 
 // moving game
 let movingGame;
@@ -115,6 +142,17 @@ function preload() {
   chatPfpPurple = loadImage('assets/chatPfpPurple.png');
   chatPfpMe = loadImage('assets/chatPfpMe.png');
 
+  // screw game image load
+  for (let i = 0; i < 4; i++) { // 파일이름이 1부터 4임 (0부터 3이 아님)
+    screwSelectedImgs[i] = loadImage("assets/screwSelected" + (i + 1) + ".png");
+  }
+  for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
+    screwImgs[i] = loadImage("assets/screw" + (i + 1) + ".png");
+  }
+
+  screwBgImg = loadImage("assets/screwBg.png");
+  screwIntroImg = loadImage("assets/screwIntroBg.png"); // 시작 화면 이미지 파일 로드
+
   // motorgame image load
   for (let i = 1; i < 9; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
     motorImgs[i] = loadImage("assets/motor" + i + ".png");
@@ -154,8 +192,15 @@ function setup() {
   shared.slime = new Player(playerInitX, playerInitY);
   camera = new Camera();
   gameMap = new GameMap(mapWidth, mapHeight, mapImg);
+
   chatGame = new ChatBot();
+
+  screwGame = new ScrewGame();
+  screwGame.setup();
+  totalDeg = 0;
+
   movingGame = new MovingGame();
+
   batteryChargeGame = new Motorgame();
 
   shared.zone = 0; // 지금 어느 미니게임 존에 있는가?
@@ -285,30 +330,69 @@ function draw() {
 
               case 1: // 중고거래 채팅 게임(타이핑 게임)
 
-                textFont(galmuriFontChat);
-                buttonX = shared.slime.x - buttonWidth / 2;
-                buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
-
-                chatGame.draw();
-                break;
-
-              case 2: // 부품 조립 게임(나사 게임)
-
-                if (progress == 1) {
-                  rectMode(CENTER);
-                  rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
-                  fill(255);
-                  textSize(50);
-                  text('Zone 2', shared.slime.x, shared.slime.y)
+                if (progress >= 0) {                
+                  textFont(galmuriFontChat);
+                  buttonX = shared.slime.x - buttonWidth / 2;
+                  buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+  
+                  chatGame.draw();
                 } else {
-                  console.log('You Should Clear Chat Game.');
+                  console.log("You've already cleared chat game.");
                   shared.moveStop = !shared.moveStop;
                 }
 
                 break;
 
+              case 2: // 부품 조립 게임(나사 게임)
+
+                if (progress >= 1) {
+                  if (screwGame.gameState === "intro") {
+                    // 시작 화면 표시
+                    image(screwIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); //맵 중앙에 800*600
+                
+                    buttonX = shared.slime.x - buttonWidth / 2;
+                    buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+                
+                    let buttonImg;
+                    if (buttonState === "normal") {
+                      buttonImg = buttonStartImg;
+                    } else if (buttonState === "over") {
+                      buttonImg = buttonStartOverImg;
+                    } else if (buttonState === "pressed") {
+                      buttonImg = buttonStartPressedImg;
+                    }
+                
+                    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+                  } else {
+                    // 게임 화면 표시
+                    // 애니메이션 배경 그리기
+                    noSmooth();
+                    noStroke();
+                    image(screwBgImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                
+                    // 각 게스트의 회전 값을 합산
+                    totalDeg = 0; // 합산된 회전 값을 초기화
+                    for (let i = 0; i < guests.length; i++) {
+                      totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
+                    }
+                    console.log("totalDeg : " + totalDeg);
+
+                    screwGame.draw();
+                  }
+                } else {
+                  if (progress < 1) {
+                  console.log('You Should Clear Chat Game.');
+                  shared.moveStop = !shared.moveStop;
+                  } else {
+                    console.log("You've already cleared Assemble game.");
+                    shared.moveStop = !shared.moveStop;
+                  }
+                }
+
+                break;
+
               case 3: // 배터리 충전 게임(모터 게임)
-                if (progress == 2) {
+                if (progress >= 2) {
                   if (batteryChargeGame.gameState === "intro") {
                     // 시작 화면 표시
                     image(motorIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); //맵 중앙에 800*600
@@ -351,6 +435,12 @@ function draw() {
 
                     console.log(`Total Acceleration Change: ${totalAccelerationChange}`); // 합산된 가속도 변화 값을 콘솔에 출력
 
+                    if (keyIsPressed) { // 아무 키나 누르면 가속도가 오름(추후 삭제)
+                      totalAccelerationChange += 100;
+                    } else {
+                      totalAccelerationChange--;
+                    }
+
                     batteryChargeGame.update(totalAccelerationChange);
                     batteryChargeGame.display();
                   }
@@ -362,7 +452,7 @@ function draw() {
 
               case 4: // 부스터 조종 게임(방향 게임)
 
-                if (progress == 3) {
+                if (progress >= 3) {
                   fill(255);
                   rectMode(CENTER);
                   rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
@@ -406,6 +496,9 @@ function draw() {
             if (!chatGame.isGameOver && !chatGame.isGameSuccess) {
               chatGame.inputBox.hide();
               chatGame.initGame();
+            }
+            if (!screwGame.isGameSuccess) {
+              screwGame.resetGame();
             }
             if (batteryChargeGame.gameState !== 'success') {
               batteryChargeGame.reset();
@@ -474,7 +567,7 @@ function draw() {
 
 function keyPressed() {
 
-  //맵 인터렉션
+  //맵 인터렉션 (추후 삭제)
   if (keyCode === 81) {
     activeTrigger = gameMap.checkTriggers(shared.slime);
     switch (activeTrigger.message) {
@@ -498,6 +591,13 @@ function keyPressed() {
         shared.moveStop = !shared.moveStop;
         shared.zone = 4;
         break;
+    }
+  }
+
+  // 나사 스페이스바로 돌리기(추후 삭제)
+  if (key === ' ') { // 스페이스바를 눌렀을 때
+    if (screwGame.selectedScrew) { // 선택된 나사가 있는 경우
+      screwGame.selectedScrew.move(); // 나사를 회전시킴
     }
   }
 
@@ -532,7 +632,8 @@ function keyReleased() {
     case 1:
       break;
     case 2: // 메인 게임
-      switch (keyCode) {
+
+      switch (keyCode) { // 방향 조작
         case 87:
           shared.slime.setDirection('up', false);
           break;
@@ -584,6 +685,19 @@ function mousePressed() {
             // }
             break;
           case 2:
+            screwGame.mousePressed(); // 미니게임 1 마우스 클릭 처리
+            if (screwGame.gameState === "intro") {
+              // 시작 화면에서 시작 버튼을 누르면 게임 시작
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                buttonState = "pressed";
+              }
+            } else if (screwGame.isGameOver || screwGame.isGameSuccess) {
+              // 게임 오버 또는 성공 화면에서 다시 시작 버튼을 누르면 게임 리셋
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                screwGame.resetGame();
+                buttonState = "pressed";
+              }
+            }
             break;
           case 3:
             if (batteryChargeGame.gameState === "intro") {
@@ -629,6 +743,17 @@ function mouseReleased() {
             // chatGame.isButtonPressedClose = false;
             break;
           case 2:
+            if (screwGame.gameState === "intro" && buttonState === "pressed") {
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                screwGame.gameState = "playing";
+              }
+              buttonState = "normal";
+            } else if ((screwGame.isGameOver || screwGame.isGameSuccess) && buttonState === "pressed") {
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                screwGame.resetGame();
+              }
+              buttonState = "normal";
+            }
             break;
           case 3:
             if (batteryChargeGame.gameState === "intro" && buttonState === "pressed") {
@@ -679,6 +804,20 @@ function mouseMoved() {
             // }
             break;
           case 2:
+            if (screwGame.gameState === "intro") {
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                buttonState = "over";
+              } else {
+                buttonState = "normal";
+              }
+            } else if (screwGame.isGameOver || screwGame.isGameSuccess) {
+              // 게임 오버 또는 성공 화면에서 버튼 위에 마우스가 있을 때 상태 업데이트
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                buttonState = "over";
+              } else {
+                buttonState = "normal";
+              }
+            }
             break;
           case 3:
             if (batteryChargeGame.gameState === "intro") {
@@ -737,4 +876,80 @@ function touchStarted() {
       }
     }
   }
+}
+
+function area(totalDeg) {
+  if (totalDeg > PI / 2 / 4 && totalDeg < (PI / 2 * 3) / 4) {
+    return 1;
+  } else if (totalDeg > -PI / 2 / 4 && totalDeg < PI / 2 / 4) {
+    return 2;
+  } else if (totalDeg > (-PI / 2 * 3) / 4 && totalDeg < -PI / 2 / 4) {
+    return 3;
+  }
+  return 0;
+}
+
+function updateDirection() {
+  if (pANum == 0) {
+    if (areaNum == 1) {
+      clockWise[1] = true;
+    } else if (areaNum == 3) {
+      antiClockWise[3] = true;
+    }
+  } else if (pANum == 1) {
+    if (areaNum == 0) {
+      clockWise[1] = false;
+    } else if (areaNum == 2) {
+      clockWise[2] = true;
+      antiClockWise[1] = false;
+    }
+  } else if (pANum == 2) {
+    if (areaNum == 1) {
+      clockWise[2] = false;
+      antiClockWise[1] = true;
+    } else if (areaNum == 3) {
+      clockWise[3] = true;
+      antiClockWise[2] = false;
+    }
+  } else if (pANum == 3) {
+    if (areaNum == 0) {
+      antiClockWise[3] = false;
+    } else if (areaNum == 2) {
+      clockWise[3] = false;
+      antiClockWise[2] = true;
+    }
+  }
+}
+
+function updateCount() {
+  if (totalDeg < 0 && pTotalDeg > 0) {
+    // anticlockwise
+    if (antiClockWise[1] && antiClockWise[2] && antiClockWise[3]) {
+      halfCount += 1;
+      antiClockWise = {
+        1: false,
+        2: false,
+        3: false,
+      };
+      // game.selectedScrew.move();
+      // halfCount =0; // 카운트 초기화 // 나사를 회전시킴
+    }
+  }
+  if (totalDeg > 0 && pTotalDeg < 0) {
+    // clockwise
+    if (clockWise[1] && clockWise[2] && clockWise[3]) {
+      halfCount -= 1;
+      clockWise = {
+        1: false,
+        2: false,
+        3: false,
+      };
+    }
+  }
+  count = int(halfCount / 2)
+}
+
+// radians() 함수는 degrees를 라디안으로 변환합니다.
+function radians(degrees) {
+  return degrees * (Math.PI / 180);
 }
