@@ -70,7 +70,6 @@ function cb(event) {
   console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
 
   if (event.gamma !== null) {
-    me.degY = radians(event.gamma);
     if (lastGamma !== null) {
       let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
       if (deltaGamma > 180) {
@@ -81,7 +80,7 @@ function cb(event) {
       totalDeg += radians(deltaGamma); // 차이를 누적하여 총 회전각에 추가
     }
     lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
-    me.degdiffY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
+    me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
   }
   if (event.beta !== null) {
     me.degX = radians(event.beta);
