@@ -82,7 +82,4 @@ function cb(event) {
     lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
     me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
   }
-  if (event.beta !== null) {
-    me.degX = radians(event.beta);
-  }
 }
