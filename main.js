@@ -121,7 +121,7 @@ function preload() {
 
   // set p5.party variables
   shared = partyLoadShared("shared", console.log('shared object is called!'));
-  me = partyLoadMyShared({ degX: 0, degY: 0, accelerationChange: 0 }, console.log("my object is called!"));
+  me = partyLoadMyShared({ degX: 0, degY: 0, degdiffY: 0, accelerationChange: 0 }, console.log("my object is called!"));
   guests = partyLoadGuestShareds(console.log("guests shared!"));
 
   // font configure
@@ -265,7 +265,7 @@ function draw() {
       totalDegY += guests[i].degY; // 각 게스트의 Y축 기울기를 합산
     }
   }
-  //console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
+  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
 
   // 본격적으로 게임 그리기
   switch (shared.mainStage) {
