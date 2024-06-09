@@ -6,7 +6,7 @@ class ObstacleGame {
       this.spawnRate = 60;
       this.counter = 0;
       this.distanceTraveled = 0;
-      this.totalDistance = 1000; // 총 이동 거리 (맵의 길이)
+      this.totalDistance = 5000; // 총 이동 거리 (맵의 길이)
       this.gameOver = false;
       this.win = false; // Initialize win state
     }

@@ -26,7 +26,16 @@ let playerInitY = 600;
 
 let mapMouseX, mapMouseY;
 
+let chatTimerStart;
+
 let progress = 4; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+let gameObjective = [
+  '올바른 대답을 입력하여 안전한 중고거래를 성사시키자. \n 컴퓨터 앞으로 가면 될 것 같은데...!',
+  '어찌저찌 부품을 샀다! 이제 로봇을 완성하려면 합판끼리 연결을 해야해! \n 나사를 열심히 돌려서 합판을 연결하러 가자.',
+  '장기 우주여행을 위해서 보조 배터리는 필수! \n 모터가 있는 곳으로 가서 열심히 돌려 배터리를 충전해두자',
+  '로봇이 거의 완성됐다! 행성 간 이동을 위해선 부스터 조작 연습이 필수다! \n 방향 조작 스틱을 기울여가며 올바른 부스터 조작을 연습하러 가보자.',
+  '모든 준비는 끝났다! 이제 로보트에 탑승해 \n 우주 쓰레기들을 피해가며 그녀의 행성까지 도착하자.'
+];
 
 let blackoutCount = 1;
 
@@ -158,8 +167,8 @@ function preload() {
   galmuriFontChat = loadFont('fonts/Galmuri9.ttf');
 
   // title & instruction & ending image load
-  computerTitle = loadImage('assets/titleBg2.png');
-  mobileTitle = loadImage("assets/titleMobile.png");
+  computerTitle = loadImage('assets/titleBg.png');
+  mobileTitle = loadImage("assets/titleMobileBg.png");
   instructionBg = loadImage("assets/instruction.png");
   instructionBg2 = loadImage("assets/instruction2.png");
   endingBg = loadImage("assets/ending.png");
@@ -330,24 +339,23 @@ function draw() {
         background('#31293D');
         imageMode(CENTER);
         noSmooth();
-        image(computerTitle, windowWidth / 2, windowHeight / 2 - 50, computerTitle.width * 3, computerTitle.height * 3);
+        image(computerTitle, windowWidth / 2, windowHeight / 2 - 50, computerTitle.width * 3.5, computerTitle.height * 3.5);
         imageMode(CORNER);
       } else {
         background('#31293D');
         imageMode(CENTER);
-        image(mobileTitle, windowWidth / 2, windowHeight / 2, image.width, image.height); // 집 가서 태블릿으로 맞출 예정
+        noSmooth();
+        image(mobileTitle, windowWidth / 2, windowHeight / 2, image.width, image.height); 
         imageMode(CORNER);
       }
       activateButton.style.display = 'none';
       break;
 
-
-
     case 1: // 스토리 설명
       background('#31293D');
       imageMode(CENTER);
       noSmooth();
-      image(instructionBg, windowWidth / 2, windowHeight / 2, computerTitle.width * 3, computerTitle.height * 3);
+      image(instructionBg, windowWidth / 2, windowHeight / 2, instructionBg.width * 1.2, instructionBg.height * 1.2);
       imageMode(CORNER);
       activateButton.style.display = 'none';
       break;
@@ -356,7 +364,7 @@ function draw() {
       background('#31293D');
       imageMode(CENTER);
       noSmooth();
-      image(instructionBg2, windowWidth / 2, windowHeight / 2, computerTitle.width * 3, computerTitle.height * 3);
+      image(instructionBg2, windowWidth / 2, windowHeight / 2, instructionBg2.width * 1.2, instructionBg2.height * 1.2);
       imageMode(CORNER);
       activateButton.style.display = 'inline';
 
@@ -391,16 +399,20 @@ function draw() {
         shared.slime.move(gameMap.obstacles);
         shared.slime.display(currentPlayerImg);
 
+        // 첫 말풍선 지속시간용
+        let chatTimer = millis();
+
         // 트리거 영역 관련 메인 코드
         if (activeTrigger) {
-
-          fill(255);
-          rectMode(CORNER);
-          rect(shared.slime.x - 50, shared.slime.y - 60, 100, 30); // 머리 위 말풍선
-          fill(0);
-          textSize(10);
-          textAlign(CENTER, CENTER);
-          text(activeTrigger.message, shared.slime.x, shared.slime.y - 45); // 말풍선 속 텍스트
+          if (chatTimer - chatTimerStart <= 10000) {
+            fill(255);
+            rectMode(CORNER);
+            rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+            fill(0);
+            textSize(10);
+            textAlign(CENTER, CENTER);
+            text('연구실을 돌아다니면서 로봇 완성에 필요한 과제들을 수행하자!\n나만으로는 힘든 과제도 보조장치의 도움을 받는다면 가능할 거야!', shared.slime.x, shared.slime.y - 45); // 말풍선 속 텍스트
+          }
 
           if (shared.moveStop) {
             switch (shared.zone) {
@@ -410,14 +422,14 @@ function draw() {
                   if (introActive) {
                     drawIntro();
                   } else {
-                      if (blackoutCount < 100) {
-                        rectMode(CENTER);
-                        fill(0, 0, 0, blackoutCount * 2.55);
-                        rect(shared.slime.x, shared.slime.y, windowWidth, windowHeight);
-                        blackoutCount++;
-                      } else {
-                        shared.mainStage = 4;
-                      }
+                    if (blackoutCount < 100) {
+                      rectMode(CENTER);
+                      fill(0, 0, 0, blackoutCount * 2.55);
+                      rect(shared.slime.x, shared.slime.y, windowWidth, windowHeight);
+                      blackoutCount++;
+                    } else {
+                      shared.mainStage = 4;
+                    }
                   }
                 } else {
                   console.log('You Should Clear Manipulation Game.');
@@ -581,19 +593,176 @@ function draw() {
                   textAlign(CENTER, BOTTOM);
                   textSize(30);
                   text('진  행  상  황', 100, -10);
-                  fill(255, 255, 0);
+                  fill('#def32e');
                   noStroke();
                   rect(2.5, 2.5, progress * 50 - 2.5, 25);
                   pop();
                 }
+                if (progress == 0 && chatTimer - chatTimerStart > 12000) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('WASD로 움직일 수 있다. 돌아다니면서 무엇을 해야할지 찾아보자!', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 4) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여기서 도구함에 있는 전부 충전된 배터리를 눌러볼까?', shared.slime.x, shared.slime.y - 45);
+                }
                 break;
-              case "Zone 1": // 중고거래 채팅 게임(타이핑 게임)
+              case "zone 1": // 중고거래 채팅 게임(타이핑 게임)
+                if (progress == 0 && chatTimer - chatTimerStart > 12000) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여기서 도구함에 있는 거래 장부처럼 생긴 것을 눌러볼까?', shared.slime.x, shared.slime.y - 45);
+                } else if (progress >= 1 && progress <= 3) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('물건 구매를 완료했다. 다른 걸 해보자!', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 4) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('물건 구매를 완료했다. 로봇을 타러 가자!', shared.slime.x, shared.slime.y - 45);
+                }
                 break;
-              case "Zone 2": // 부품 조립 게임(나사 게임)
+              case "zone 2": // 부품 조립 게임(나사 게임)
+                if (progress == 0 && chatTimer - chatTimerStart > 12000) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여긴 아무 것도 없다.', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 1) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여기서 도구함에 있는 드라이버를 집어볼까?', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 2 || progress == 3) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('부품 조립을 완료했다. 다른 걸 해보자!', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 4) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('부품 조립을 완료했다. 로봇을 타러 가자!', shared.slime.x, shared.slime.y - 45);
+                }
                 break;
-              case "Zone 3": // 배터리 충전 게임(모터 게임)
+              case "zone 3": // 배터리 충전 게임(모터 게임)
+                if (progress == 0 && chatTimer - chatTimerStart > 12000) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여긴 아무 것도 없다.', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 1) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('모터는 조금만 이따가 돌리도록 하자. 조립이 먼저!', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 2) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여기서 도구함에 있는 배터리를 집어볼까?', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 3) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('배터리 충전을 완료했다. 다른 걸 해보자!', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 4) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('배터리 충전을 완료했다. 로봇을 타러 가자!', shared.slime.x, shared.slime.y - 45);
+                }
                 break;
-              case "Zone 4": // 부스터 조종 게임(방향 게임)
+              case "zone 4": // 부스터 조종 게임(방향 게임)
+                if (progress == 0 && chatTimer - chatTimerStart > 12000) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여긴 아무 것도 없다.', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 1) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('부스터는 조금만 이따가 테스트하도록 하자. 조립이 먼저!', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 2) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('부스터는 조금만 이따가 테스트하도록 하자. 배터리 충전이 먼저!', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 3) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('여기서 도구함에 있는 컨트롤러를 집어볼까?', shared.slime.x, shared.slime.y - 45);
+                } else if (progress == 4) {
+                  fill(255);
+                  rectMode(CORNER);
+                  rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+                  fill(0);
+                  textSize(10);
+                  textAlign(CENTER, CENTER);
+                  text('부스터 조종을 마스터했다. 로봇을 타러 가자!', shared.slime.x, shared.slime.y - 45);
+                }
                 break;
             }
             if (!chatGame.isGameOver && !chatGame.isGameSuccess) {
@@ -608,20 +777,34 @@ function draw() {
             }
             movingGame.resetGame();
           }
+        } else {
+          if (chatTimer - chatTimerStart > 12000) {
+            fill(255);
+              rectMode(CORNER);
+              rect(shared.slime.x - 170, shared.slime.y - 60, 340, 30); // 머리 위 말풍선
+              fill(0);
+              textSize(10);
+              textAlign(CENTER, CENTER);
+              text(gameObjective[progress], shared.slime.x, shared.slime.y - 45); // 말풍선 속 텍스트
+          }
         }
       } else { // 핸드폰으로 접속한다면
         rectMode(CORNER);
         fill('#31293D');
         rect(0, 0, windowWidth, windowHeight);
         imageMode(CENTER);
-        image(mobileToolImg, windowWidth / 2, windowHeight / 2, 600, 360);
-        fill(255, 100);
-        stroke(255);
-        rectMode(CENTER);
-        rect(windowWidth / 2 - 40, windowHeight / 2 + 10, 100, 160); // 컨트롤러
-        rect(windowWidth / 2 - 150, windowHeight / 2 + 10, 100, 160); // 드라이버
-        rect(windowWidth / 2 + 65, windowHeight / 2 + 10, 100, 155); // 배터리
-        rect(windowWidth / 2 + 165, windowHeight / 2 + 10, 90, 165); // 주문 확인서
+        if (progress < 3) {
+          image(mobileToolImg, windowWidth / 2, windowHeight / 2, 600, 360);
+        } else {
+          image(mobileToolImg2, windowWidth / 2, windowHeight / 2, 600, 360);
+        }
+        // fill(255, 100);
+        // stroke(255);
+        // rectMode(CENTER);
+        // rect(windowWidth / 2 - 40, windowHeight / 2 + 10, 100, 160); // 컨트롤러
+        // rect(windowWidth / 2 - 150, windowHeight / 2 + 10, 100, 160); // 드라이버
+        // rect(windowWidth / 2 + 65, windowHeight / 2 + 10, 100, 155); // 배터리
+        // rect(windowWidth / 2 + 165, windowHeight / 2 + 10, 90, 165); // 주문 확인서
 
         // fill(0);
         // stroke(0);
@@ -638,72 +821,89 @@ function draw() {
         // text("Zone 3", windowWidth / 2, windowHeight / 5 * 3.5);
         // text("Zone 4", windowWidth / 2, windowHeight / 5 * 4.5);
 
-        if (shared.moveStop) {
-          textAlign(CENTER, CENTER);
-          switch (shared.zone) {
-            case 0:
-              fill(255);
-              textSize(50);
-              text("Spawn Zone", windowWidth / 2, windowHeight / 10);
-              break;
-            case 1:
-              fill(255);
-              textSize(50);
-              text("Zone 1", windowWidth / 2, windowHeight / 5 * 1.5);
-              break;
-            case 2:
-              fill(255);
-              textSize(50);
-              text("Zone 2", windowWidth / 2, windowHeight / 5 * 2.5);
-              break;
-            case 3:
-              fill(255);
-              textSize(50);
-              text("Zone 3", windowWidth / 2, windowHeight / 5 * 3.5);
-              break;
-            case 4:
-              fill(255);
-              textSize(50);
-              text("Zone 4", windowWidth / 2, windowHeight / 5 * 4.5);
-              break;
-          }
-        }
+        // if (shared.moveStop) {
+        //   textAlign(CENTER, CENTER);
+        //   switch (shared.zone) {
+        //     case 0:
+        //       fill(255);
+        //       textSize(50);
+        //       text("Spawn Zone", windowWidth / 2, windowHeight / 10);
+        //       break;
+        //     case 1:
+        //       fill(255);
+        //       textSize(50);
+        //       text("Zone 1", windowWidth / 2, windowHeight / 5 * 1.5);
+        //       break;
+        //     case 2:
+        //       fill(255);
+        //       textSize(50);
+        //       text("Zone 2", windowWidth / 2, windowHeight / 5 * 2.5);
+        //       break;
+        //     case 3:
+        //       fill(255);
+        //       textSize(50);
+        //       text("Zone 3", windowWidth / 2, windowHeight / 5 * 3.5);
+        //       break;
+        //     case 4:
+        //       fill(255);
+        //       textSize(50);
+        //       text("Zone 4", windowWidth / 2, windowHeight / 5 * 4.5);
+        //       break;
+        //   }
+        // }
       }
       break;
     case 4: // dodge game
-      drawGame();
-      if (dodgeGame.win && dodgeGame.gameOver) {
-        if (blackoutCount < 100) {
+      if (device == 'Computer') {
+        drawGame();
+        if (dodgeGame.win && dodgeGame.gameOver) {
+          if (blackoutCount < 100) {
+            rectMode(CORNER);
+            fill(0, 0, 0, blackoutCount * 2.55);
+            rect(0, 0, windowWidth, windowHeight);
+            blackoutCount++;
+            console.log(blackoutCount);
+          } else {
+            shared.mainStage = 5;
+          }
+        } else if (blackoutCount > 0) {
           rectMode(CORNER);
           fill(0, 0, 0, blackoutCount * 2.55);
           rect(0, 0, windowWidth, windowHeight);
-          blackoutCount++;
-          console.log(blackoutCount);
-        } else {
-          shared.mainStage = 5;
+          blackoutCount--;
         }
-      } else if (blackoutCount > 0) {
-        rectMode(CORNER);
-        fill(0, 0, 0, blackoutCount * 2.55);
-        rect(0, 0, windowWidth, windowHeight);
-        blackoutCount--;
-      }
 
-      if (keyIsPressed) { // 임시 조작키
-        dodgeGame.player.x += 5;
-      } else if (mouseIsPressed) {
-        dodgeGame.player.x -= 5;
+        if (keyIsPressed) { // 임시 조작키
+          dodgeGame.player.x += 5;
+        } else if (mouseIsPressed) {
+          dodgeGame.player.x -= 5;
+        }
+      } else {
+        background('#31293D');
+        imageMode(CENTER);
+        noSmooth();
+        image(mobileTitle, windowWidth / 2, windowHeight / 2, image.width, image.height); // 집 가서 태블릿으로 맞출 예정
+        imageMode(CORNER);
       }
       break;
     case 5:
-      background('#31293D');
-      imageMode(CENTER);
-      image(endingBg, windowWidth / 2, windowHeight / 2, windowWidth * 0.8, windowHeight);
-      if (blackoutCount > 0) {
-        rectMode(CORNER);
-        fill(0, 0, 0, blackoutCount * 2.55);
-        rect(0, 0, windowWidth, windowHeight);
-        blackoutCount--;
+      if (device == 'Computer') {
+        background('#31293D');
+        imageMode(CENTER);
+        noSmooth();
+        image(endingBg, windowWidth / 2, windowHeight / 2, windowWidth * 0.8, windowHeight);
+        if (blackoutCount > 0) {
+          rectMode(CORNER);
+          fill(0, 0, 0, blackoutCount * 2.55);
+          rect(0, 0, windowWidth, windowHeight);
+          blackoutCount--;
+        }
+      } else {
+        background('#31293D');
+        imageMode(CENTER);
+        noSmooth();
+        image(mobileTitle, windowWidth / 2, windowHeight / 2, image.width, image.height); // 집 가서 태블릿으로 맞출 예정
+        imageMode(CORNER);
       }
       break;
   }
@@ -827,6 +1027,7 @@ function mousePressed() {
     case 2:
       if (shared.checkConnection) {
         shared.mainStage = 3;
+        chatTimerStart = millis();
       }
       break;
     case 3:
@@ -834,7 +1035,7 @@ function mousePressed() {
         switch (shared.zone) {
           case 0:
             if (introActive) {
-              if (buttonStartOverImg, buttonX, buttonY, buttonWidth, buttonHeight) {
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
                 startButtonPressed = true;
               }
             }
@@ -1088,7 +1289,7 @@ function touchStarted() {
       activeTrigger = gameMap.checkTriggers(shared.slime);
       switch (activeTrigger.message) {
         case "spawn zone \n press Q to interact":
-          if (touch.x > 0 && touch.x < windowWidth && touch.y > 0 && touch.y < windowHeight / 5) {
+          if (progress == 4 && touch.x > windowWidth / 2 + 15 && touch.x < windowWidth / 2 + 115 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 0;
           }
@@ -1097,28 +1298,24 @@ function touchStarted() {
           if (touch.x > windowWidth / 2 + 120 && touch.x < windowWidth / 2 + 210 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 1;
-            console.log('Touch!');
           }
           break;
         case "zone 2": // screw game
           if (touch.x > windowWidth / 2 - 200 && touch.x < windowWidth / 2 + 100 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 2;
-            console.log('Touch!');
           }
           break;
         case "zone 3": // motor game
           if (touch.x > windowWidth / 2 + 15 && touch.x < windowWidth / 2 + 115 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 3;
-            console.log('Touch!');
           }
           break;
         case "zone 4": // moving game
           if (touch.x > windowWidth / 2 - 90 && touch.x < windowWidth / 2 + 10 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 4;
-            console.log('Touch!');
           }
           break;
       }
