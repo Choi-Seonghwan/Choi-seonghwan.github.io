@@ -441,10 +441,12 @@ function draw() {
                     for (let i = 0; i < guests.length; i++) {
                       totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
                     }
-                    radians(totalDeg);
-                    console.log("totalDeg : " + totalDeg);
+                    console.log("totalDeg");
+                    console.log(totalDeg);
 
                     screwGame.draw();
+
+                    console.log(totalDeg);
                   }
                 } else {
                   if (progress < 1) {
@@ -1016,7 +1018,7 @@ function updateCount() {
   count = int(halfCount / 2)
 }
 
-// radians() 함수는 degrees를 라디안으로 변환합니다.
-function radians(degrees) {
-  return degrees * (Math.PI / 180);
-}
+// // radians() 함수는 degrees를 라디안으로 변환합니다.
+// function radians(degrees) {
+//   return degrees * (Math.PI / 180);
+// }
