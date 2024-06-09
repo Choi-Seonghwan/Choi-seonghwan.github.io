@@ -23,7 +23,7 @@ let playerInitY = 600;
 
 let mapMouseX, mapMouseY;
 
-let progress = 2; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+let progress = 3; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 
 // zone trigger
 let keyPressedTrigger = false;
@@ -68,6 +68,14 @@ let antiClockWise = {
 let movingGame;
 let totalDegX = 0;
 let totalDegY = 0;
+let lastDirectionText = "";
+let boostIntroBg;
+let boostImgBg;
+let boostImgs = [];
+let boostButtonImgs = [];
+
+let saveDegX = 0;
+let saveDegY = 0;
 
 // motor game
 // 애니메이션은 모터와 배터리 두 종류가 있음
@@ -102,66 +110,6 @@ let dungGeunMoFont, galmuriFont, galmuriFontChat;
 
 // minigame success and over image
 let successBg, gameoverBg;
-
-// devicemotion 이벤트 콜백 함수
-let lastGamma = null; // 이전 gamma 값을 저장
-function cb(event) {
-  console.log("eventmotor");
-  const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
-  const accWithoutGravity = event.acceleration || { x: 0, y: 0, z: 0 };
-
-  // 중력 보정
-  const alpha = 0.8;
-  me.gravity = me.gravity || { x: 0, y: 0, z: 0 };
-
-  me.gravity.x = alpha * me.gravity.x + (1 - alpha) * acc.x;
-  me.gravity.y = alpha * me.gravity.y + (1 - alpha) * acc.y;
-  me.gravity.z = alpha * me.gravity.z + (1 - alpha) * acc.z;
-
-  const adjustedAcc = {
-    x: acc.x - me.gravity.x,
-    y: acc.y - me.gravity.y,
-    z: acc.z - me.gravity.z,
-  };
-
-  const acceleration = Math.sqrt(adjustedAcc.x * adjustedAcc.x + adjustedAcc.y * adjustedAcc.y + adjustedAcc.z * adjustedAcc.z) || 0;
-
-  if (!me.previousAcceleration) {
-    me.previousAcceleration = acceleration;
-  }
-
-  const accelerationChange = Math.abs(acceleration - me.previousAcceleration);
-  me.previousAcceleration = acceleration;
-
-  // 초기 측정값 무시
-  if (ignoreCount > 0) {
-    ignoreCount--;
-    me.accelerationChange = 0;
-  } else {
-    if (accelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
-      me.accelerationChange = accelerationChange;
-      lastMotionTime = millis();
-    } else {
-      me.accelerationChange = 0;
-    }
-  }
-
-  console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
-
-  if (event.gamma !== null) {
-    if (lastGamma !== null) {
-      let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
-      if (deltaGamma > 180) {
-        deltaGamma -= 360; // 기기가 회전한 방향 보정
-      } else if (deltaGamma < -180) {
-        deltaGamma += 360;
-      }
-      totalDeg += radians(deltaGamma); // 차이를 누적하여 총 회전각에 추가
-    }
-    lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
-    me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
-  }
-}
 
 function preload() {
 
@@ -224,6 +172,15 @@ function preload() {
   }
   motorBgImg = loadImage("assets/motor_bg.png");
   motorIntroImg = loadImage("assets/motorIntroBg.png"); // 시작 화면 이미지 파일 로드
+
+  // movinggame image load
+  boostIntroBg = loadImage('assets/boostIntroBg.png');
+  boostImgBg = loadImage('assets/boostBg.png');
+  for (i = 0; i < 5; i++) {
+    boostImgs[i] = loadImage('assets/boost' + i + '.png');
+  }
+  boostButtonImgs[0] = loadImage('assets/boostButton0.png');
+  boostButtonImgs[1] = loadImage('assets/boostButton1.png');
 
   // button image load
   buttonStartImg = loadImage("assets/buttonStart.png");
@@ -298,10 +255,6 @@ function draw() {
 
   background(60);
   //scale(0.5) //전체맵 확인용 스케일
-
-  // 각도 합산 (추후 삭제될 예정)
-  me.degX = rotationX;
-  me.degY = rotationY;
 
   totalDegX = 0; // 합산된 회전 값을 초기화
   totalDegY = 0;
@@ -439,7 +392,7 @@ function draw() {
                     // 각 게스트의 회전 값을 합산
                     totalDeg = 0; // 합산된 회전 값을 초기화
                     for (let i = 0; i < guests.length; i++) {
-                      totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
+                      totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
                     }
                     console.log("totalDeg");
                     console.log(totalDeg);
@@ -522,12 +475,11 @@ function draw() {
               case 4: // 부스터 조종 게임(방향 게임)
 
                 if (progress >= 3) {
-                  fill(255);
-                  rectMode(CENTER);
-                  rect(shared.slime.x, shared.slime.y, windowWidth * 0.8, windowHeight * 0.8);
+                  buttonX = shared.slime.x - buttonWidth / 2;
+                  buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+
                   movingGame.update();
-                  movingGame.draw();
-                  movingGame.degmatch();
+                  movingGame.draw(totalDegX, totalDegY);
                 } else {
                   console.log('You Should Clear Motor Game.');
                   shared.moveStop = !shared.moveStop;
@@ -670,6 +622,15 @@ function keyPressed() {
     }
   }
 
+  if (keyCode === ENTER){
+
+    saveDegX = totalDegX
+    saveDegY = totalDegY
+    movingGame.degmatch(saveDegX, saveDegY);
+    saveDegX = 0
+    saveDegY = 0
+  }
+
   switch (shared.mainStage) {
     case 0:
       break;
@@ -721,11 +682,11 @@ function keyReleased() {
 }
 
 function mousePressed() {
-  if (movingGame && typeof movingGame.handleKeyPressed === 'function') {
-    movingGame.handleKeyPressed();
-  } else {
-    console.error("game.handleKeyPressed is not a function or game is not defined");
-  }
+  // if (movingGame && typeof movingGame.handleKeyPressed === 'function') {
+  //   movingGame.handleKeyPressed();
+  // } else {
+  //   console.error("game.handleKeyPressed is not a function or game is not defined");
+  // }
 
   switch (shared.mainStage) {
     case 0:
@@ -763,7 +724,6 @@ function mousePressed() {
             } else if (screwGame.isGameOver || screwGame.isGameSuccess) {
               // 게임 오버 또는 성공 화면에서 다시 시작 버튼을 누르면 게임 리셋
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-                screwGame.resetGame();
                 buttonState = "pressed";
               }
             }
@@ -777,6 +737,18 @@ function mousePressed() {
             }
             break;
           case 4:
+            if (!movingGame.gameStarted && mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+              movingGame.isButtonPressed = true;
+            }
+          
+            if (movingGame.gameOver && !movingGame.success && mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+              movingGame.isButtonPressedAgain = true;
+            }
+          
+            // if (movingGame.gameOver && movingGame.success && mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+            //   movingGame.isButtonPressedClose = true;
+            //   movingGame.closeGame();
+            // }
             break;
         }
       }
@@ -834,6 +806,18 @@ function mouseReleased() {
             }
             break;
           case 4:
+            if (!movingGame.gameStarted) {
+              movingGame.isButtonPressed = false;
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                movingGame.handleKeyPressed();
+              }
+            }
+            if (movingGame.gameOver && !movingGame.success) {
+              movingGame.isButtonPressedAgain = false;
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                movingGame.resetGame();
+              }
+            }
             break;
         }
       }
@@ -898,6 +882,23 @@ function mouseMoved() {
             }
             break;
           case 4:
+            if (!movingGame.gameStarted && mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+              movingGame.isButtonOver = true;
+            } else {
+              movingGame.isButtonOver = false;
+            }
+          
+            if (movingGame.gameOver && !movingGame.success && mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+              movingGame.isButtonOverAgain = true;
+            } else {
+              movingGame.isButtonOverAgain = false;
+            }
+          
+            // if (game.gameOver && game.success && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height * 5 / 6 - 43.75 && mouseY < height * 5 / 6 + 43.75) {
+            //   game.isButtonOverClose = true;
+            // } else {
+            //   game.isButtonOverClose = false;
+            // }
             break;
         }
       }
