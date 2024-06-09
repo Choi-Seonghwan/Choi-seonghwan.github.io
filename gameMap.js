@@ -1,8 +1,8 @@
 class GameMap {
-  constructor(width, height, img) {
+  constructor(width, height, imgs) {
     this.width = width; //1600
     this.height = height; //1200
-    this.img = img;
+    this.imgs = imgs;
     this.obstacles = [ //타일 한 칸당 80px로 계산
       { x: 0, y: 0, width: 1600, height: 220 }, //top wall
       { x: 480, y: 760, width: 80, height: 100 }, //spawn wall left
@@ -36,7 +36,7 @@ class GameMap {
     // fill(100);
     // rect(0, 0, this.width, this.height);
     noSmooth();
-    image(this.img, 0, 0, this.width, this.height);
+    this.update();
 
     // obstacle
     // fill(255, 0, 0, 100);
@@ -63,5 +63,10 @@ class GameMap {
       }
     }
     return null;
+  }
+
+  update() {
+    let img = this.imgs[progress]
+    image(img, 0, 0, this.width, this.height);
   }
 }

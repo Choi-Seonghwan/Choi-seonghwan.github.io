@@ -146,26 +146,26 @@ class MovingGame {
 
     // this.restartButton.show();
 
-    let img;
-    if (this.isButtonPressedClose) {
-      img = buttonClosePressedImg;
-    } else if (this.isButtonOverClose) {
-      img = buttonCloseOverImg;
-    } else {
-      img = buttonCloseImg;
-    }
-    image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 200 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
+    // let img;
+    // if (this.isButtonPressedClose) {
+    //   img = buttonClosePressedImg;
+    // } else if (this.isButtonOverClose) {
+    //   img = buttonCloseOverImg;
+    // } else {
+    //   img = buttonCloseImg;
+    // }
+    // image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 200 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
   }
 
   drawDirections() {
-    textSize(50);
+    textSize(40);
     fill('#A6E31E');
     stroke('#31293d');
     strokeWeight(10);
     textAlign(CENTER, CENTER);
     for (let i = 0; i < this.currentDirections.length; i++) {
 
-    text(this.getArrowSymbol(this.currentDirections[i]), shared.slime.x + (i - (this.currentDirections.length - 1) / 2) * 70, shared.slime.y - 185);
+    text(this.getArrowSymbol(this.currentDirections[i]), shared.slime.x + (i - (this.currentDirections.length - 1) / 2) * 60, shared.slime.y - 185);
     
   }
     textSize(32);
