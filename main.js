@@ -3,8 +3,10 @@ let shared; // 현재 mainStage, slime, zone, moveStop 있음
 let me;
 let guests;
 
-// computer & mobile intro image
+// computer & mobile intro image & instruction & ending
 let computerTitle, mobileTitle;
+let instructionBg;
+let endingBg;
 
 //game Map & character
 let gameMap;
@@ -179,9 +181,11 @@ function preload() {
   galmuriFont = loadFont('fonts/Galmuri7.ttf');
   galmuriFontChat = loadFont('fonts/Galmuri9.ttf');
 
-  // title image load
+  // title & instruction & ending image load
   computerTitle = loadImage('assets/titleBg.png');
   mobileTitle = loadImage("assets/titleMobile.png");
+  instructionBg = loadImage("assets/instruction.png");
+  endingBg = loadImage("assets/ending.png");
 
   // player image load
   for (let i = 0; i < 5; i++) {
@@ -331,9 +335,11 @@ function draw() {
 
 
     case 1: // 스토리 설명
-      console.log("Instruction");
-      fill(0);
-      rect(0, 0, windowWidth, windowHeight);
+      background('#31293D');
+      imageMode(CENTER);
+      noSmooth();
+      image(instructionBg, windowWidth / 2, windowHeight / 2, computerTitle.width * 3, computerTitle.height * 3);
+      imageMode(CORNER);
       activateButton.style.display = 'inline';
       break;
 
@@ -435,6 +441,7 @@ function draw() {
                     for (let i = 0; i < guests.length; i++) {
                       totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
                     }
+                    radians(totalDeg);
                     console.log("totalDeg : " + totalDeg);
 
                     screwGame.draw();
