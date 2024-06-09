@@ -30,7 +30,7 @@ class Motorgame {
   display() {
     if (this.gameState === "playing" || this.gameState === "success") {
       // 에너지 게이지 그리기
-      this.drawEnergyGauge(this.energy, this.maxEnergy);
+      // this.drawEnergyGauge(this.energy, this.maxEnergy);
 
       // 모터 애니메이션
       if (this.acceleration > 0 && this.gameState === "playing") {
@@ -45,7 +45,7 @@ class Motorgame {
         motorBatteryImgNow = 8; // 충전 완료된 배터리 이미지로 설정
       }
       motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-      image(motorBatteryImg, shared.slime.x - 455, shared.slime.y - 300, 800, 600);
+      image(motorBatteryImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
     }
 
     if (this.gameState === "success") {
