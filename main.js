@@ -121,7 +121,7 @@ function preload() {
 
   // set p5.party variables
   shared = partyLoadShared("shared", console.log('shared object is called!'));
-  me = partyLoadMyShared({ degX: 0, degY: 0, accelerationChange: 0 }, console.log("my object is called!"));
+  me = partyLoadMyShared({ degX: 0, degY: 0, degdiffY: 0, accelerationChange: 0 }, console.log("my object is called!"));
   guests = partyLoadGuestShareds(console.log("guests shared!"));
 
   // font configure
@@ -392,7 +392,9 @@ function draw() {
                     // 각 게스트의 회전 값을 합산
                     totalDeg = 0; // 합산된 회전 값을 초기화
                     for (let i = 0; i < guests.length; i++) {
-                      totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
+                      if (guests[i].degdiffY !== undefined) {
+                        totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
+                      } 
                     }
                     console.log("totalDeg");
                     console.log(totalDeg);
