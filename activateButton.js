@@ -1,4 +1,3 @@
-// DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
   if (activateButton) {
@@ -14,20 +13,22 @@ function onClick() {
     DeviceMotionEvent.requestPermission()
       .then(permissionState => {
         if (permissionState === 'granted') {
-          window.addEventListener('devicemotion', cb);
+          window.addEventListener('devicemotion', handleDeviceMotion);
+          window.addEventListener('deviceorientation', handleDeviceOrientation);
         }
       })
       .catch(console.error);
   } else {
-    window.addEventListener('devicemotion', cb);
+    window.addEventListener('devicemotion', handleDeviceMotion);
+    window.addEventListener('deviceorientation', handleDeviceOrientation);
     // iOS 13 이전 버전이나 다른 장치에서는 권한 요청 없이 바로 이벤트를 추가
   }
 }
 
 // devicemotion 이벤트 콜백 함수
 let lastGamma = null; // 이전 gamma 값을 저장
-function cb(event) {
-  console.log("eventmotor");
+function handleDeviceMotion(event) {
+  console.log("DeviceMotionEvent detected");
   const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
   const accWithoutGravity = event.acceleration || { x: 0, y: 0, z: 0 };
 
@@ -68,7 +69,11 @@ function cb(event) {
   }
 
   console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
+}
 
+// deviceorientation 이벤트 콜백 함수
+function handleDeviceOrientation(event) {
+  console.log("DeviceOrientationEvent detected");
   if (event.gamma !== null) {
     if (lastGamma !== null) {
       let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
