@@ -392,7 +392,7 @@ function draw() {
                     // 각 게스트의 회전 값을 합산
                     totalDeg = 0; // 합산된 회전 값을 초기화
                     for (let i = 0; i < guests.length; i++) {
-                      totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
+                      totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
                     }
                     console.log("totalDeg");
                     console.log(totalDeg);
