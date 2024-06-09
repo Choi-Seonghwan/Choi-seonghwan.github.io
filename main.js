@@ -101,6 +101,66 @@ let dungGeunMoFont, galmuriFont, galmuriFontChat;
 // minigame success and over image
 let successBg, gameoverBg;
 
+// devicemotion 이벤트 콜백 함수
+let lastGamma = null; // 이전 gamma 값을 저장
+function cb(event) {
+  console.log("eventmotor");
+  const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
+  const accWithoutGravity = event.acceleration || { x: 0, y: 0, z: 0 };
+
+  // 중력 보정
+  const alpha = 0.8;
+  me.gravity = me.gravity || { x: 0, y: 0, z: 0 };
+
+  me.gravity.x = alpha * me.gravity.x + (1 - alpha) * acc.x;
+  me.gravity.y = alpha * me.gravity.y + (1 - alpha) * acc.y;
+  me.gravity.z = alpha * me.gravity.z + (1 - alpha) * acc.z;
+
+  const adjustedAcc = {
+    x: acc.x - me.gravity.x,
+    y: acc.y - me.gravity.y,
+    z: acc.z - me.gravity.z,
+  };
+
+  const acceleration = Math.sqrt(adjustedAcc.x * adjustedAcc.x + adjustedAcc.y * adjustedAcc.y + adjustedAcc.z * adjustedAcc.z) || 0;
+
+  if (!me.previousAcceleration) {
+    me.previousAcceleration = acceleration;
+  }
+
+  const accelerationChange = Math.abs(acceleration - me.previousAcceleration);
+  me.previousAcceleration = acceleration;
+
+  // 초기 측정값 무시
+  if (ignoreCount > 0) {
+    ignoreCount--;
+    me.accelerationChange = 0;
+  } else {
+    if (accelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
+      me.accelerationChange = accelerationChange;
+      lastMotionTime = millis();
+    } else {
+      me.accelerationChange = 0;
+    }
+  }
+
+  console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
+
+  if (event.gamma !== null) {
+    if (lastGamma !== null) {
+      let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
+      if (deltaGamma > 180) {
+        deltaGamma -= 360; // 기기가 회전한 방향 보정
+      } else if (deltaGamma < -180) {
+        deltaGamma += 360;
+      }
+      totalDeg += radians(deltaGamma); // 차이를 누적하여 총 회전각에 추가
+    }
+    lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
+    me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
+  }
+}
+
 function preload() {
 
   //p5.party basic properties
