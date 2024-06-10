@@ -66,6 +66,9 @@ class MovingGame {
     if (this.gameOver) {
       if (this.success) {
         this.drawSuccessScreen();
+        if (progress == 3) {
+          progress++;
+        }
       } else {
         this.drawGameOverScreen();
       }

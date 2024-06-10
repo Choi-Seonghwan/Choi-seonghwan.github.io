@@ -54,11 +54,8 @@ class ObstacleGame {
   
       // 목적지에 도달하면 게임 성공 처리
       if (this.distanceTraveled >= this.totalDistance) {
-        if (!this.gameOver && !this.win) {
-          this.gameOver = true;
-          this.win = true; // 게임 성공 상태
-          progress++; 
-        }
+        this.gameOver = true;
+        this.win = true; // 게임 성공 상태
       }
     }
   
