@@ -43,7 +43,18 @@ class MovingGame {
   }
 
 
+  getTimeLimit() {
+    return this.baseTimeLimit + this.round * 100000; //
+  }
+
   update() {
+    if (this.gameOver) {
+      return;
+    }
+
+    if (millis() - this.startTime > this.getTimeLimit()) {
+      this.gameOver = true;
+    }
   }
 
   draw(storedDegZ,storedDegY) {
