@@ -99,7 +99,6 @@ class MovingGame {
     image(boostImgs[boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
     this.drawDirections();
-    this.drawTimer();
   }
 
   drawStartScreen() {
