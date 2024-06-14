@@ -395,6 +395,7 @@ function draw() {
         camera.apply();
         gameMap.display();
 
+        fill(255);
         arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
 
         // 맵 트리거
