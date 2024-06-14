@@ -1,5 +1,5 @@
 //p5.party 기본
-let shared; // 현재 mainStage, slime, zone, moveStop 있음
+let shared; // 현재 mainStage, slime, zone, moveStop, checkConnection 있음
 let me;
 let guests;
 
@@ -293,10 +293,16 @@ function setup() {
   shared.checkConnection = false; // 연동 버튼을 눌렀는가?
 
   // device check
-  if (radians(rotationX) == 0) {
-    device = 'Computer'
+  // if (radians(rotationX) == 0) {
+  //   device = 'Computer'
+  // } else {
+  //   device = 'Mobile'
+  // }
+
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    device = 'Mobile';
   } else {
-    device = 'Mobile'
+    device = 'Computer';
   }
 
   // motorgame 초기 설정: 총 가속도 변화율 초기화
@@ -312,9 +318,12 @@ function setup() {
 
 function draw() {
 
+  console.log(device);
+  console.log(navigator.userAgent);
+
   textFont(galmuriFont); // 채팅 게임이 끝나도 폰트 재지정
 
-  // 마우스 좌표 재지정
+  // 마우스 좌표 재지정 (카메라 위치에 맞춰서 마우스 좌표를 다시 계산하는 과정)
   mapMouseX = mouseX - windowWidth / 2 + shared.slime.x;
   mapMouseY = mouseY - windowHeight / 2 + shared.slime.y;
 
@@ -378,6 +387,8 @@ function draw() {
 
     case 3: // 메인 게임
       activateButton.style.display = 'none'; // 버튼 안 보이게 숨기기
+
+      arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
 
       if (device == 'Computer') { // 만약 컴퓨터로 접속한다면
 
