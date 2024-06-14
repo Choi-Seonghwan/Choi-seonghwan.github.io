@@ -318,8 +318,9 @@ function setup() {
 
 function draw() {
 
-  console.log(device);
-  console.log(navigator.userAgent);
+  fill(255);
+  arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, guests[1].degdiffY);
+  console.log(guests[1].degdiffY)
 
   textFont(galmuriFont); // 채팅 게임이 끝나도 폰트 재지정
 
@@ -394,9 +395,6 @@ function draw() {
         camera.update(shared.slime);
         camera.apply();
         gameMap.display();
-
-        fill(255);
-        arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
 
         // 맵 트리거
         gameMap.displayTriggers();
@@ -498,12 +496,9 @@ function draw() {
                         totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
                       }
                     }
-                    console.log("totalDeg");
-                    console.log(totalDeg);
+                    console.log("totalDeg : " + totalDeg);
 
                     screwGame.draw();
-
-                    console.log(totalDeg);
                   }
                 } else {
                   if (progress < 1) {
