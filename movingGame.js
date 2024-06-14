@@ -179,13 +179,13 @@ class MovingGame {
   degmatch(storedDegX, storedDegY) {
     let inputDirection = null;
     fill(0);
-    if (storedDegY > 0.5) {
+    if (storedDegY > 1.5) {
       inputDirection = 'RIGHT';
-    } else if (storedDegY < -0.5) {
+    } else if (storedDegY < -1.5) {
       inputDirection = 'LEFT';
-    } else if (storedDegX > 0.5) {
+    } else if (storedDegZ > 0.5) {
       inputDirection = 'DOWN';
-    } else if (storedDegX < -0.5) {
+    } else if (storedDegZ < -0.5) {
       inputDirection = 'UP';
     }
 
@@ -197,7 +197,7 @@ class MovingGame {
         this.round++;
         this.startNewRound();
       } else {
-        lastDirectionText = `StoredDegX: ${storedDegX.toFixed(2)}, StoredDegY: ${storedDegY.toFixed(2)}, Direction: ${inputDirection}`;
+        lastDirectionText = `StoredDegX: ${storedDegZ.toFixed(2)}, StoredDegY: ${storedDegY.toFixed(2)}, Direction: ${inputDirection}`;
       }
     }
   }
