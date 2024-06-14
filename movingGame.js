@@ -80,18 +80,18 @@ class MovingGame {
 
     //엔터누를때 버튼 누르는 이미지
     let boostButtonPressed = 0
-    if (keyIsPressed && keyCode === ENTER) boostButtonPressed = 1;
+    if (keyIsPressed && keyCode === 32) boostButtonPressed = 1;
     else boostButtonPressed = 0;
     image(boostButtonImgs[boostButtonPressed], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
     let boostDirection = 0;
-    if (storedDegY > 1.5) {
+    if (storedDegY > 1.2) {
       boostDirection = 4;
-    } else if (storedDegY < -1.5) {
+    } else if (storedDegY < -1.2) {
       boostDirection = 3;
-    } else if (storedDegZ > 0.5) {
+    } else if (storedDegX > 1.7) {
       boostDirection = 2;
-    } else if (storedDegZ < -0.5) {
+    } else if (storedDegX < 1.2) {
       boostDirection = 1;
     }
 
@@ -186,16 +186,16 @@ class MovingGame {
     }
   }
 
-  degmatch(storedDegX, storedDegY) {
+  degmatch(storedDegZ, storedDegX) {
     let inputDirection = null;
     fill(0);
-    if (storedDegY > 1.5) {
+    if (storedDegY > 1.2) {
       inputDirection = 'RIGHT';
-    } else if (storedDegY < -1.5) {
+    } else if (storedDegY < -1.2) {
       inputDirection = 'LEFT';
-    } else if (storedDegZ > 0.5) {
+    } else if (storedDegX > 1.7) {
       inputDirection = 'DOWN';
-    } else if (storedDegZ < -0.5) {
+    } else if (storedDegX < 1.2) {
       inputDirection = 'UP';
     }
 
