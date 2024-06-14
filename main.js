@@ -82,12 +82,14 @@ let antiClockWise = {
 let movingGame;
 let totalDegX = 0;
 let totalDegY = 0;
+let totalDegZ = 0;
 let lastDirectionText = "";
 let boostIntroBg;
 let boostImgBg;
 let boostImgs = [];
 let boostButtonImgs = [];
 
+let saveDegZ = 0;
 let saveDegX = 0;
 let saveDegY = 0;
 
@@ -333,9 +335,10 @@ function draw() {
     if (guests[i] && guests[i].degX !== undefined && guests[i].degY !== undefined) {
       totalDegX += guests[i].degX; // 각 게스트의 X축 기울기를 합산
       totalDegY += guests[i].degY; // 각 게스트의 Y축 기울기를 합산
+      totalDegZ += guests[i].degZ;
     }
   }
-  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
+  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY, "totalDegZ:", totalDegZ);
 
   // 본격적으로 게임 그리기
   switch (shared.mainStage) {
