@@ -28,7 +28,7 @@ let mapMouseX, mapMouseY;
 
 let chatTimerStart;
 
-let progress = 0; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+let progress = 4; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 let gameObjective = [
   '올바른 대답을 입력하여 안전한 중고거래를 성사시키자. \n 컴퓨터 앞으로 가면 될 것 같은데...!',
   '어찌저찌 부품을 샀다! 이제 로봇을 완성하려면 합판끼리 연결을 해야해! \n 나사를 열심히 돌려서 합판을 연결하러 가자.',
@@ -317,16 +317,6 @@ function setup() {
 }
 
 function draw() {
-
-  for (let i = 0; i < guests.length; i++) {
-    if (guests[i].degdiffY !== undefined) {
-      totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
-    }
-  }
-  fill(255);
-  arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
-  console.log(totalDeg);
-
   textFont(galmuriFont); // 채팅 게임이 끝나도 폰트 재지정
 
   // 마우스 좌표 재지정 (카메라 위치에 맞춰서 마우스 좌표를 다시 계산하는 과정)
@@ -501,6 +491,8 @@ function draw() {
                         totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
                       }
                     }
+                    fill(255);
+                    arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
                     console.log("totalDeg : " + totalDeg);
 
                     screwGame.draw();
