@@ -318,9 +318,14 @@ function setup() {
 
 function draw() {
 
+  for (let i = 0; i < guests.length; i++) {
+    if (guests[i].degdiffY !== undefined) {
+      totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
+    }
+  }
   fill(255);
-  arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, guests[1].degdiffY);
-  console.log(guests[1].degdiffY)
+  arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
+  console.log(totalDeg);
 
   textFont(galmuriFont); // 채팅 게임이 끝나도 폰트 재지정
 
