@@ -953,9 +953,6 @@ function keyPressed() {
     if (screwGame.selectedScrew) { // 선택된 나사가 있는 경우
       screwGame.selectedScrew.move(); // 나사를 회전시킴
     }
-  }
-
-  if (key === ' ') {
 
     saveDegX = totalDegX
     saveDegY = totalDegY
