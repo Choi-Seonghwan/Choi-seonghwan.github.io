@@ -135,12 +135,12 @@ console.log(saveDegX)
 }
 
 function keyPressed(){
-  if (keyCode === ENTER){
+  if (keyCode === 32){
 
-    saveDegX = totalDegX
+    saveDegZ = totalDegZ
     saveDegY = totalDegY
-    game.degmatch(saveDegX, saveDegY);
-    saveDegX = 0
+    game.degmatch(saveDegZ, saveDegY);
+    saveDegZ = 0
     saveDegY = 0
   }
 }
