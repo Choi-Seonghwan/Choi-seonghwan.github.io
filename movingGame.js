@@ -3,7 +3,7 @@ class MovingGame {
     this.directions = [];
     this.currentDirections = [];
     this.round = 1;
-    this.maxRounds = 4;
+    this.maxRounds = 3;
     this.baseTimeLimit = 30000; // 기본 30초
     this.startTime = 0;
     this.gameOver = false;
@@ -42,21 +42,11 @@ class MovingGame {
     return random(directions);
   }
 
-  getTimeLimit() {
-    return this.baseTimeLimit + this.round * 1000; // 라운드마다 1초 추가
-  }
 
   update() {
-    if (this.gameOver) {
-      return;
-    }
-
-    if (millis() - this.startTime > this.getTimeLimit()) {
-      this.gameOver = true;
-    }
   }
 
-  draw(storedDegX,storedDegY) {
+  draw(storedDegZ,storedDegY) {
 
     if (!this.gameStarted) {
       this.drawStartScreen();
@@ -84,13 +74,13 @@ class MovingGame {
     image(boostButtonImgs[boostButtonPressed], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
     let boostDirection = 0;
-    if (storedDegY > 0.5) {
+    if (storedDegY > 1.5) {
       boostDirection = 4;
-    } else if (storedDegY < -0.5) {
+    } else if (storedDegY < -1.5) {
       boostDirection = 3;
-    } else if (storedDegX > 0.5) {
+    } else if (storedDegZ > 0.5) {
       boostDirection = 2;
-    } else if (storedDegX < -0.5) {
+    } else if (storedDegZ < -0.5) {
       boostDirection = 1;
     }
 
@@ -172,22 +162,6 @@ class MovingGame {
     
   }
     textSize(32);
-  }
-
-  drawTimer() {
-    let elapsedTime = millis() - this.startTime;
-    let timerWidth = map(elapsedTime, 150, this.getTimeLimit(), 800 - 124, 0);
-
-
-    fill('#31293d');
-    stroke('#31293d');
-    strokeWeight(5);
-    rect(shared.slime.x - 400 + 48, shared.slime.y + 300 - 64, 800 - 94, 20);
-    noStroke();
-    noStroke();
-    fill('#A6E31E');
-    rect(shared.slime.x - 400 + 50, shared.slime.y + 300 - 62, timerWidth, 16); // 레트로 스타일 타이머 막대
-
   }
 
   handleKeyPressed() {
