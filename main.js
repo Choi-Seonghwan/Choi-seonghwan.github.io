@@ -330,6 +330,7 @@ function draw() {
 
   totalDegX = 0; // 합산된 회전 값을 초기화
   totalDegY = 0;
+  totalDegZ = 0;
 
   for (let i = 0; i < guests.length; i++) {
     if (guests[i] && guests[i].degX !== undefined && guests[i].degY !== undefined) {
