@@ -388,14 +388,14 @@ function draw() {
     case 3: // 메인 게임
       activateButton.style.display = 'none'; // 버튼 안 보이게 숨기기
 
-      arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
-
       if (device == 'Computer') { // 만약 컴퓨터로 접속한다면
 
         // 카메라 적용 + 맵 그리기
         camera.update(shared.slime);
         camera.apply();
         gameMap.display();
+
+        arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
 
         // 맵 트리거
         gameMap.displayTriggers();
