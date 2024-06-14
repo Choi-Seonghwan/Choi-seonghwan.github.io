@@ -578,7 +578,7 @@ function draw() {
                   buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
 
                   movingGame.update();
-                  movingGame.draw(totalDegX, totalDegY);
+                  movingGame.draw(totalDegZ, totalDegY);
                 } else {
                   console.log('You Should Clear Motor Game.');
                   shared.moveStop = !shared.moveStop;
