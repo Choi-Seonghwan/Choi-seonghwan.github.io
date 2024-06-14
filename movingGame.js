@@ -57,7 +57,7 @@ class MovingGame {
     }
   }
 
-  draw(storedDegZ,storedDegY) {
+  draw(storedDegX,storedDegY) {
 
     if (!this.gameStarted) {
       this.drawStartScreen();
