@@ -186,7 +186,7 @@ class MovingGame {
     }
   }
 
-  degmatch(storedDegZ, storedDegX) {
+  degmatch(storedDegX, storedDegY) {
     let inputDirection = null;
     fill(0);
     if (storedDegY > 1.2) {
