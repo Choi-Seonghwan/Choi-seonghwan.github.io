@@ -24,7 +24,7 @@ class GameMap {
     this.triggers = [
       { x: 560, y: 460, width: 480, height: 420, message: "spawn zone \n press Q to interact" },
 
-      { x: 0, y: 500, width: 320, height: 300, message: "zone 1" }, //왼쪽 위
+      { x: 0, y: 500, width: 240, height: 300, message: "zone 1" }, //왼쪽 위
       { x: 0, y: 920, width: 400, height: 280, message: "zone 2" }, //왼쪽 아래
 
       { x: 1280, y: 440, width: 320, height: 360, message: "zone 3" }, //오른쪽 위
