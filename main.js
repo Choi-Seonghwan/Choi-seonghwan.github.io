@@ -949,11 +949,8 @@ function keyPressed() {
   }
 
   // 나사 스페이스바로 돌리기(추후 삭제)
-  if (key === ' ') { // 스페이스바를 눌렀을 때
-    if (screwGame.selectedScrew) { // 선택된 나사가 있는 경우
-      screwGame.selectedScrew.move(); // 나사를 회전시킴
-    }
-
+  if (keyCode === 32) { // 스페이스바를 눌렀을 때
+    
     saveDegX = totalDegX
     saveDegY = totalDegY
     movingGame.degmatch(saveDegX, saveDegY);
