@@ -78,7 +78,7 @@ class MovingGame {
 
     image(boostImgBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
-    //엔터누를때 버튼 누르는 이미지
+    //스페이스바 누를때 버튼 누르는 이미지
     let boostButtonPressed = 0
     if (keyIsPressed && keyCode === 32) boostButtonPressed = 1;
     else boostButtonPressed = 0;
