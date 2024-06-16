@@ -12,7 +12,7 @@ class ObstacleGame {
   }
 
   reset() {
-    this.player = { x: width / 2, y: height - 50, size: 120 };
+    this.player = { x: windowWidth / 2, y: height - 50, size: 120 };
     this.obstacles = [];
     this.counter = 0;
     this.distanceTraveled = 0;
