@@ -707,6 +707,10 @@ function draw() {
 
                     shared.batteryChargeGame.update(totalAccelerationChange);
                     shared.batteryChargeGame.display();
+
+                    if (shared.batteryChargeGame.gameState == 'success' && shared.progress == 2) {
+                      shared.progress++;
+                    }
                   }
                 } else {
                   console.log('You Should Clear Assemble Game.');

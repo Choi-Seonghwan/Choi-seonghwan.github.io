@@ -24,7 +24,6 @@ class Motorgame {
       if (this.energy >= this.maxEnergy) {
         this.gameState = "success";
         this.successTime = frameCount; // 성공 시간을 현재 frameCount로 설정
-        shared.progress++;
       }
     }
   }
