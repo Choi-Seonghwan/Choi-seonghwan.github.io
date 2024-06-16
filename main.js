@@ -319,7 +319,7 @@ function setup() {
 
   movingGame = new MovingGame();
 
-  batteryChargeGame = new Motorgame();
+  shared.batteryChargeGame = new Motorgame();
 
   shared.dodgeGame = new ObstacleGame();
   dodgeBgY2 = -windowWidth * 2;
@@ -657,7 +657,7 @@ function draw() {
 
               case 3: // 배터리 충전 게임(모터 게임)
                 if (shared.progress >= 2) {
-                  if (batteryChargeGame.gameState === "intro") {
+                  if (shared.batteryChargeGame.gameState === "intro") {
                     // 시작 화면 표시
                     image(motorIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); //맵 중앙에 800*600
 
@@ -705,8 +705,8 @@ function draw() {
                       totalAccelerationChange--;
                     }
 
-                    batteryChargeGame.update(totalAccelerationChange);
-                    batteryChargeGame.display();
+                    shared.batteryChargeGame.update(totalAccelerationChange);
+                    shared.batteryChargeGame.display();
                   }
                 } else {
                   console.log('You Should Clear Assemble Game.');
@@ -908,8 +908,8 @@ function draw() {
             if (!screwGame.isGameSuccess) {
               screwGame.resetGame();
             }
-            if (batteryChargeGame.gameState !== 'success') {
-              batteryChargeGame.reset();
+            if (shared.batteryChargeGame.gameState !== 'success') {
+              shared.batteryChargeGame.reset();
             }
             if (!movingGame.success) {
               movingGame.resetGame();
@@ -961,7 +961,7 @@ function draw() {
               rect(0, 0, windowWidth, windowHeight);
               rectMode(CORNERS);
               fill('#DEF32E');
-              rect(0, windowHeight, windowWidth, map(batteryChargeGame.energy, 0, batteryChargeGame.maxEnergy, windowHeight, 0));
+              rect(0, windowHeight, windowWidth, map(shared.batteryChargeGame.energy, 0, shared.batteryChargeGame.maxEnergy, windowHeight, 0));
               imageMode(CENTER);
               image(lightningImg2, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
               break;
@@ -1167,7 +1167,7 @@ function keyPressed() {
             screwGame.selectedScrew.move();
           }
         }
-        if (shared.moveStop && shared.zone == 3) {
+        if (shared.moveStop && shared.zone == 4) {
           saveDegX = totalDegX;
           saveDegY = totalDegY;
           movingGame.degmatch(saveDegX, saveDegY);
@@ -1318,12 +1318,12 @@ function mousePressed() {
             // }
             // break;
           case 3:
-            if (batteryChargeGame.gameState === "intro") {
+            if (shared.batteryChargeGame.gameState === "intro") {
               // 시작 화면에서 시작 버튼을 누르면 게임 시작
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
                 buttonState = "pressed";
               }
-            } else if (batteryChargeGame.gameState === 'success') {
+            } else if (shared.batteryChargeGame.gameState === 'success') {
               let buttonX = shared.slime.x - buttonWidth / 2;
               let buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
@@ -1437,11 +1437,11 @@ function mouseReleased() {
             }
             break;
           case 3:
-            if (batteryChargeGame.gameState === "intro" && buttonState === "pressed") {
+            if (shared.batteryChargeGame.gameState === "intro" && buttonState === "pressed") {
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-                batteryChargeGame.gameState = "playing";
+                shared.batteryChargeGame.gameState = "playing";
               }
-            } else if (batteryChargeGame.gameState === 'success' && buttonState === 'pressed') {
+            } else if (shared.batteryChargeGame.gameState === 'success' && buttonState === 'pressed') {
               let buttonX = shared.slime.x - buttonWidth / 2;
               let buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
@@ -1564,13 +1564,13 @@ function mouseMoved() {
             }
             break;
           case 3:
-            if (batteryChargeGame.gameState === "intro") {
+            if (shared.batteryChargeGame.gameState === "intro") {
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
                 buttonState = "over";
               } else {
                 buttonState = "normal";
               }
-            } else if (batteryChargeGame.gameState === 'success') {
+            } else if (shared.batteryChargeGame.gameState === 'success') {
               let buttonX = shared.slime.x - buttonWidth / 2;
               let buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {

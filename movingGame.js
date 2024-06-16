@@ -63,7 +63,7 @@ class MovingGame {
   draw(storedDegX,storedDegY) {
 
     if (!this.gameStarted) {
-      this.drawStartScreen();
+      this.drawStartScreen(storedDegX, storedDegY);
       return;
     }
 
@@ -104,7 +104,7 @@ class MovingGame {
     this.drawDirections();
   }
 
-  drawStartScreen() {
+  drawStartScreen(storedDegX, storedDegY) {
     if (this.phase == 1) {image(boostIntroBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
       let img;
       if (this.isButtonPressed) {
@@ -118,7 +118,17 @@ class MovingGame {
       image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 130 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
     } else if (this.phase == 2) {
       image(boostIntroBg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 2번째 화면
-      image(boostStickImgs[this.boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 연습화면에서 기어봉 조작 연습
+      let boostDirection = 0;
+      if (storedDegY > 1.2) {
+        boostDirection = 4;
+      } else if (storedDegY < -1.2) {
+        boostDirection = 3;
+      } else if (storedDegX > 1.7) {
+        boostDirection = 2;
+      } else if (storedDegX < 1.2) {
+        boostDirection = 1;
+      } 
+      image(boostStickImgs[boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 연습화면에서 기어봉 조작 연습
       let img;
       if (this.isButtonPressed) {
         img = buttonStartPressedImg;
