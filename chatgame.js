@@ -9,6 +9,10 @@ class ChatBot {
       this.userInput = ""; // 사용자의 입력을 저장하는 변수
       this.expectedInputs = []; // 사용자가 입력해야 할 텍스트 목록
       this.currentInputIndex = 0; // 현재 입력해야 할 텍스트의 인덱스
+      this.inputMatchCorrect = false; // 입력 메세지가 정확한가?
+      this.inputMatchIncorrect = false; // 입력 메세지를 잘못 입력했나?
+      this.colorChange = 0; // 잘못 입력했을 때, 입력할 메세지 색깔 빨갛게 바꾸기
+      this.colorChangeSpeed = 10; // 빨갛게 바뀌는 속도
       this.isGameOver = false; // 게임 오버 상태
       this.isGameSuccess = false; // 게임 성공 상태
       this.isGameStarted = false; // 게임 시작 상태
@@ -77,12 +81,25 @@ class ChatBot {
       fill(218);
       textAlign(CENTER);
       textSize(32);
-      if (this.currentInputIndex < this.expectedInputs.length) {
-        text("입력할 문구: " + this.expectedInputs[this.currentInputIndex], shared.slime.x, shared.slime.y + 300 - 150);
+      if (this.currentInputIndex < this.expectedInputs.length && !this.inputMatchCorrect && !this.inputMatchIncorrect) {
+        text("입력할 문구: " + this.expectedInputs[this.currentInputIndex], shared.slime.x, shared.slime.y + 300 - 160);
+      } else if (this.inputMatchCorrect) {
+        // 만약 맞다면 아무 것도 입력하지 말기
+      } else if (this.inputMatchIncorrect) {
+        this.colorChange += this.colorChangeSpeed;
+        if (this.colorChange <= 255) {
+          fill(255, this.colorChange, this.colorChange);
+          text("입력할 문구: " + this.expectedInputs[this.currentInputIndex], shared.slime.x + random(-5, 5), shared.slime.y + 300 - 160);
+        } else {
+          this.inputMatchIncorrect = false;
+          this.colorChange = 0;
+          fill(255);
+          text("입력할 문구: " + this.expectedInputs[this.currentInputIndex], shared.slime.x, shared.slime.y + 300 - 160);
+        }
       } else {
         setTimeout(() => {
           this.gameSuccess(); // 모든 입력이 완료되었을 때 게임 성공 처리
-        }, 4000);
+        }, 2000);
       }
   
       // 사용자의 메시지 그리기
@@ -92,9 +109,9 @@ class ChatBot {
         strokeWeight(4);
         textAlign(RIGHT);
         textSize(32);
-        image(chatPfpMe, shared.slime.x + 400 - 100, shared.slime.y - 300 + 124 + 150 * i, 50, 50)// 내 프로필 사진
+        image(chatPfpMe, shared.slime.x + 400 - 100, shared.slime.y - 300 + 124 + 160 * i, 50, 50)// 내 프로필 사진
         // rect(800 - 50 -50, 124 + 140 * i, 50, 50); 
-        text(this.userMessages[i], shared.slime.x + 400 - 50, shared.slime.y - 300 + 204 + 150 * i);
+        text(this.userMessages[i], shared.slime.x + 400 - 50, shared.slime.y - 300 + 204 + 160 * i);
       }
   
       // 챗봇의 메시지 그리기
@@ -104,28 +121,39 @@ class ChatBot {
         strokeWeight(4);
         textAlign(LEFT);
         textSize(32);
-        image(chatPfpPurple, shared.slime.x - 400 + 50, shared.slime.y - 300 + 50 + 150 * i, 50, 50)// 상대방 프로필 사진
+        image(chatPfpPurple, shared.slime.x - 400 + 50, shared.slime.y - 300 + 50 + 160 * i, 50, 50)// 상대방 프로필 사진
         // rect(50, 50 + 140 * i, 50, 50);  
-        text(this.assistantMessages[i], shared.slime.x - 400 + 50, shared.slime.y - 300 + 130 + 150 * i);
+        text(this.assistantMessages[i], shared.slime.x - 400 + 50, shared.slime.y - 300 + 130 + 160 * i);
       }
   
       // 타이머 막대 그래프 표시
-      let timePassed = millis() - this.timerStart;
-      let timeLeft = this.timeLimit - timePassed;
-      let barWidth = map(timeLeft, 0, this.timeLimit, 0, 800 - 96);
+      // if (this.inputMatchCorrect) {
+      //   fill('#31293d');
+      //   stroke('#31293d');
+      //   strokeWeight(5);
+      //   rect(shared.slime.x - 400 + 48, shared.slime.y + 300 - 68, 800 - 94, 20);
+      //   noStroke();
+      //   noStroke();
+      //   fill('#A6E31E'); //슬라임 색 타이머
+      //   rect(shared.slime.x - 400 + 50, shared.slime.y + 300 - 66, 800 - 96, 16); // 레트로 스타일 타이머 막대
+      // } else {
+      //   let timePassed = millis() - this.timerStart;
+      //   let timeLeft = this.timeLimit - timePassed;
+      //   let barWidth = map(timeLeft, 0, this.timeLimit, 0, 800 - 96);
   
-      fill('#31293d');
-      stroke('#31293d');
-      strokeWeight(5);
-      rect(shared.slime.x - 400 + 48, shared.slime.y + 300 - 68, 800 - 94, 20);
-      noStroke();
-      noStroke();
-      fill('#A6E31E'); //슬라임 색 타이머
-      rect(shared.slime.x - 400 + 50, shared.slime.y + 300 - 66, barWidth, 16); // 레트로 스타일 타이머 막대
-  
-      if (timeLeft <= 0) {
-        this.gameOver();
-      }
+      //   fill('#31293d');
+      //   stroke('#31293d');
+      //   strokeWeight(5);
+      //   rect(shared.slime.x - 400 + 48, shared.slime.y + 300 - 68, 800 - 94, 20);
+      //   noStroke();
+      //   noStroke();
+      //   fill('#A6E31E'); //슬라임 색 타이머
+      //   rect(shared.slime.x - 400 + 50, shared.slime.y + 300 - 66, barWidth, 16); // 레트로 스타일 타이머 막대
+    
+      //   if (timeLeft <= 0) {
+      //     this.gameOver();
+      //   }
+      // }
     }
   
     drawGameOver() {
@@ -158,6 +186,8 @@ class ChatBot {
       } else {
         //성공 배경
         image(successBg,shared.slime.x - 400,shared.slime.y - 300,800,600);
+        drawExitButton();
+        
         // 게임 성공 시 닫기 버튼 표시
         // let img;
         // if (this.isButtonPressedClose) {
@@ -184,7 +214,7 @@ class ChatBot {
         img = buttonStartImg;
       }
       noSmooth();
-      image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 200 - buttonHeight / 2 - 10, buttonWidth, buttonHeight); // 이미지 크기를 200x87.5px로 설정
+      image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 130 - buttonHeight / 2 - 10, buttonWidth, buttonHeight); // 이미지 크기를 200x87.5px로 설정
     }
   
     sendMessage() {
@@ -193,6 +223,7 @@ class ChatBot {
   
       // 입력해야 할 텍스트가 올바른지 확인
       if (this.userInput === this.expectedInputs[this.currentInputIndex]) {
+        this.inputMatchCorrect = true;
         this.userMessages.push(this.userInput); // 사용자의 입력 메시지를 배열에 추가
         setTimeout(() => { // 0.5 ~ 1.5초 사이에 채팅을 입력하는 것처럼 보이게 함함
           this.assistantMessages.push('...');
@@ -207,9 +238,10 @@ class ChatBot {
           this.assistantMessages.push(this.assistantReplies[this.currentInputIndex]);
           this.currentInputIndex++; // 다음 입력해야 할 텍스트로 이동    
           this.resetTimer(); // 타이머 리셋
+          this.inputMatchCorrect = false;
         }, int(random(1500, 4000)));
       } else {
-        text(this.expectedInputs[this.currentInputIndex], 800 / 2, 600 - 50);
+        this.inputMatchIncorrect = true;
       }
     }
   
@@ -227,8 +259,8 @@ class ChatBot {
       if (!this.isGameSuccess) { // 게임 성공 상태인지 확인
         this.isGameSuccess = true;
         this.gameOver();
-        progress++;
-        console.log(progress);
+        shared.progress++;
+        console.log(shared.progress);
       }
     }
   

@@ -20,6 +20,9 @@ class MovingGame {
     this.isButtonOverAgain = false;
     this.isButtonPressedClose = false;
     this.isButtonOverClose = false;
+    this.boostDirection = 0;
+    this.currentBg = false;
+    this.phase = 1;
   }
 
   startNewRound() {
@@ -67,8 +70,8 @@ class MovingGame {
     if (this.gameOver) {
       if (this.success) {
         this.drawSuccessScreen();
-        if (progress == 3) {
-          progress++;
+        if (shared.progress == 3) {
+          shared.progress++;
         }
       } else {
         this.drawGameOverScreen();
@@ -84,35 +87,49 @@ class MovingGame {
     else boostButtonPressed = 0;
     image(boostButtonImgs[boostButtonPressed], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
-    let boostDirection = 0;
     if (storedDegY > 1.2) {
-      boostDirection = 4;
+      this.boostDirection = 4;
     } else if (storedDegY < -1.2) {
-      boostDirection = 3;
+      this.boostDirection = 3;
     } else if (storedDegX > 1.7) {
-      boostDirection = 2;
+      this.boostDirection = 2;
     } else if (storedDegX < 1.2) {
-      boostDirection = 1;
+      this.boostDirection = 1;
     }
 
 
-    image(boostImgs[boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+    image(boostImgs[this.boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+    image(boostSpacebar, shared.slime.x - 400, shared.slime.y - 300, 800, 600 );
 
     this.drawDirections();
   }
 
   drawStartScreen() {
-    image(boostIntroBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-    let img;
-    if (this.isButtonPressed) {
-      img = buttonStartPressedImg;
-    } else if (this.isButtonOver) {
-      img = buttonStartOverImg;
-    } else {
-      img = buttonStartImg;
-    }
-    noSmooth();
-    image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 200 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
+    if (this.phase == 1) {image(boostIntroBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+      let img;
+      if (this.isButtonPressed) {
+        img = buttonNextPressedImg;
+      } else if (this.isButtonOver) {
+        img = buttonNextOverImg;
+      } else {
+        img = buttonNextImg;
+      }
+      noSmooth();
+      image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 130 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
+    } else if (this.phase == 2) {
+      image(boostIntroBg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 2번째 화면
+      image(boostStickImgs[this.boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 연습화면에서 기어봉 조작 연습
+      let img;
+      if (this.isButtonPressed) {
+        img = buttonStartPressedImg;
+      } else if (this.isButtonOver) {
+        img = buttonStartOverImg;
+      } else {
+        img = buttonStartImg;
+      }
+      image(img, shared.slime.x - buttonWidth / 2 + 240, shared.slime.y + 200 - buttonHeight / 2 + 20, buttonWidth * 0.8, buttonHeight * 0.8);
+      this.currentBg = true;
+    } else {this.currentBg = true};
   }
 
   drawGameOverScreen() {
@@ -146,6 +163,8 @@ class MovingGame {
 
     image(successBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
+    drawExitButton();
+
 
     // this.restartButton.show();
 
@@ -175,7 +194,9 @@ class MovingGame {
   }
 
   handleKeyPressed() {
-    if (!this.gameStarted) {
+    if (this.currentBg == false){
+      this.phase++;
+    } else if (!this.gameStarted) {
       this.gameStarted = true;
       this.startNewRound();
       return;
@@ -219,6 +240,8 @@ class MovingGame {
     this.success = false;
     this.restartButton.hide();
     this.startNewRound();
+    this.currentBg = false;
+    this.phase = 1;
   }
 
   getArrowSymbol(direction) {

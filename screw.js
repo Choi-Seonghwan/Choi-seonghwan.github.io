@@ -8,8 +8,8 @@ class Screw {
       this.angle = 0; // 나사의 각도
       this.successed = false; // 나사 성공 여부
       this.imageIndex = 0; // 이미지 인덱스 초기화
-      this.imageWidth = 75;
-      this.imageHeight = 150;
+      this.imageWidth = 100;
+      this.imageHeight = 100;
       this.selected = false; // 나사 선택 여부 초기화
     }
   

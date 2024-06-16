@@ -66,7 +66,7 @@ class GameMap {
   }
 
   update() {
-    let img = this.imgs[progress]
+    let img = this.imgs[shared.progress]
     image(img, 0, 0, this.width, this.height);
   }
 }
