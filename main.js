@@ -306,8 +306,8 @@ function setup() {
   textFont(galmuriFont);
 
   // shared variable setting
-  shared.mainStage = 0 // 지금 어디 페이지인가?
-  shared.progress = 0; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+  shared.mainStage = 3 // 지금 어디 페이지인가?
+  shared.progress = 4; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 
   shared.slime = new Player(playerInitX, playerInitY);
   camera = new Camera();
@@ -1486,11 +1486,16 @@ function mouseReleased() {
       break;
     case 4:
       if (restartButtonPressed) {
-        if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+        let restartW = 200;
+        let restartH = 100;
+        let restartX = windowWidth / 2 - restartW / 2;
+        let restartY = windowHeight / 5 * 4 - restartH / 2;
+    
+        if (mouseX > restartX && mouseX < restartX + restartW && mouseY > restartY && mouseY < restartY + restartH) {
           shared.dodgeGame.reset();
         }
-      }
       restartButtonPressed = false;
+      }
 
       break;
       // if (dodgeGame.gameOver && restartButtonPressed) {
