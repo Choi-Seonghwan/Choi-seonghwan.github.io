@@ -1193,6 +1193,7 @@ function keyPressed() {
             endingPage++;
             break;
           case 2:
+            endingPage++;
             break;
         }
         break;
