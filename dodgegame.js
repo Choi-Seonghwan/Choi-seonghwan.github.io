@@ -24,11 +24,7 @@ class ObstacleGame {
   handleMotion(accelerationX) {
     // 기울기 값을 사용하여 플레이어 이동
     const sensitivity = 2; // 기울기 민감도 조절
-    if (/Android/i.test(navigator.userAgent)) {
-      this.player.x += -accelerationX * sensitivity;
-    } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       this.player.x += accelerationX * sensitivity;
-    }
 
     if (this.player.x < 0) this.player.x = 0;
     if (this.player.x > width) this.player.x = width;

@@ -9,6 +9,7 @@ let prologue = [];
 let prologuePage = 0;
 let ending = [];
 let endingPage = 0;
+let creditImg;
 
 // mobile screen
 let mobileToolImg, mobileToolImg2;
@@ -191,6 +192,7 @@ function preload() {
   for (let i = 1; i < 4; i++) {
     ending[i - 1] = loadImage('assets/cutsceneEnding' + i + '.png');
   }
+  creditImg = loadImage('assets/credit.png');
 
   // mobile tool image load
   mobileToolImg = loadImage('assets/mobile-tool(bttry_low).png');
@@ -305,7 +307,7 @@ function setup() {
 
   // shared variable setting
   shared.mainStage = 0 // 지금 어디 페이지인가?
-  shared.progress = 4; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+  shared.progress = 0; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 
   shared.slime = new Player(playerInitX, playerInitY);
   camera = new Camera();
@@ -1097,6 +1099,9 @@ function draw() {
             break;
           case 2:
             image(ending[2], windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
+            break;
+          case 3:
+            image(creditImg, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
             break;
         }
         if (blackoutCount > 0) {
