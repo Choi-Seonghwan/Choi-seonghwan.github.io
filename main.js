@@ -304,7 +304,7 @@ function setup() {
   textFont(galmuriFont);
 
   // shared variable setting
-  shared.mainStage = 3; // 지금 어디 페이지인가?
+  shared.mainStage = 0 // 지금 어디 페이지인가?
   shared.progress = 4; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 
   shared.slime = new Player(playerInitX, playerInitY);
