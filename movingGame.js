@@ -233,7 +233,7 @@ class MovingGame {
     // 첫 번째 방향과 현재 방향을 비교하여 일치하면 첫 번째 방향만 제거
     if (inputDirection && this.currentDirections.length > 0 && inputDirection === this.currentDirections[0]) {
       this.currentDirections.shift();
-      console.log("Input matched:", inputDirection, "Remaining directions:", this.currentDirections);
+      // console.log("Input matched:", inputDirection, "Remaining directions:", this.currentDirections);
       if (this.currentDirections.length === 0) {
         this.round++;
         this.startNewRound();

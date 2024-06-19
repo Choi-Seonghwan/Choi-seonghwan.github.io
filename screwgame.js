@@ -13,7 +13,7 @@ class ScrewGame {
   }
 
   setup() {
-    console.log("Game setup called");
+    // console.log("Game setup called");
     this.createScrews(); // 나사 객체 생성
     // this.restartButton = createButton("다시 시작"); // 다시 시작 버튼 생성
     // this.restartButton.position(width / 2 - 50, height / 2); // 버튼 위치 설정

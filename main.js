@@ -380,7 +380,7 @@ function draw() {
       totalDegZ += guests[i].degZ;
     }
   }
-  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY, "totalDegZ:", totalDegZ);
+  // console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY, "totalDegZ:", totalDegZ);
 
   // 본격적으로 게임 그리기
   switch (shared.mainStage) {
@@ -489,7 +489,7 @@ function draw() {
             fill(0);
             textSize(13);
             textAlign(CENTER, CENTER);
-            text('연구실을 돌아다니면서 로봇 완성에 필요한 과제들을 수행하자!\n나만으로는 힘든 과제도 보조장치의 도움을 받는다면 가능할 거야!', shared.slime.x, shared.slime.y - 55); // 말풍선 속 텍스트
+            text('연구실을 돌아다니면서 로봇 완성에 필요한 과제들을 수행하자! \n 나만으로는 힘든 과제도 보조장치의 도움을 받는다면 가능할 거야!', shared.slime.x, shared.slime.y - 55); // 말풍선 속 텍스트
           }
 
           if (shared.moveStop) {
@@ -525,7 +525,7 @@ function draw() {
                     }
                   }
               } else {
-                console.log('You Should Clear Manipulation Game.');
+                // console.log('You Should Clear Manipulation Game.');
                 shared.moveStop = !shared.moveStop;
               }
               break;
@@ -561,7 +561,7 @@ function draw() {
                   }
                   chatGame.draw();
                 } else {
-                  console.log("You've already cleared chat game.");
+                  // console.log("You've already cleared chat game.");
                   shared.moveStop = !shared.moveStop;
                 }
 
@@ -587,7 +587,7 @@ function draw() {
                       }
                       fill(255);
                       arc(shared.slime.x - buttonWidth / 2 + 325, shared.slime.y+55, 200, 200, -PI/2, totalDeg*2);
-                      console.log("totalDeg : " + totalDeg);
+                      // console.log("totalDeg : " + totalDeg);
 
                       let buttonImg;
                       if (buttonState === "normal") {
@@ -617,7 +617,7 @@ function draw() {
                     }
                     fill(255,100);
                     arc(shared.slime.x + 300, shared.slime.y -215, 70, 70, -PI/2, totalDeg*2);
-                    console.log("totalDeg : " + totalDeg);
+                    // console.log("totalDeg : " + totalDeg);
                     screwGame.draw();
                     if (screwGame.isGameSuccess) {
                       drawExitButton();
@@ -647,10 +647,10 @@ function draw() {
                   // }
                 } else {
                   if (shared.progress < 1) {
-                    console.log('You Should Clear Chat Game.');
+                    // console.log('You Should Clear Chat Game.');
                     shared.moveStop = !shared.moveStop;
                   } else {
-                    console.log("You've already cleared Assemble game.");
+                    // console.log("You've already cleared Assemble game.");
                     shared.moveStop = !shared.moveStop;
                   }
                 }
@@ -677,7 +677,7 @@ function draw() {
 
                     image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
 
-                    console.log(`mapMouseX is ${mapMouseX}, mapMouseY is ${mapMouseY} // buttonX is ${buttonX}, buttonY is ${buttonY}`);
+                    // console.log(`mapMouseX is ${mapMouseX}, mapMouseY is ${mapMouseY} // buttonX is ${buttonX}, buttonY is ${buttonY}`);
                   } else {
                     // 게임 화면 표시
                     // 애니메이션 배경 그리기
@@ -699,13 +699,13 @@ function draw() {
                       }
                     }
 
-                    console.log(`Total Acceleration Change: ${totalAccelerationChange}`); // 합산된 가속도 변화 값을 콘솔에 출력
+                    // console.log(`Total Acceleration Change: ${totalAccelerationChange}`); // 합산된 가속도 변화 값을 콘솔에 출력
 
-                    if (keyIsPressed) { // 아무 키나 누르면 가속도가 오름(추후 삭제)
-                      totalAccelerationChange += 100;
-                    } else {
-                      totalAccelerationChange--;
-                    }
+                    // if (keyIsPressed) { // 아무 키나 누르면 가속도가 오름(추후 삭제)
+                    //   totalAccelerationChange += 100;
+                    // } else {
+                    //   totalAccelerationChange--;
+                    // }
 
                     shared.batteryChargeGame.update(totalAccelerationChange);
                     shared.batteryChargeGame.display();
@@ -715,7 +715,7 @@ function draw() {
                     }
                   }
                 } else {
-                  console.log('You Should Clear Assemble Game.');
+                  // console.log('You Should Clear Assemble Game.');
                   shared.moveStop = !shared.moveStop;
                 }
                 break;
@@ -733,7 +733,7 @@ function draw() {
                   movingGame.update();
                   movingGame.draw(totalDegX, totalDegY);
                 } else {
-                  console.log('You Should Clear Motor Game.');
+                  // console.log('You Should Clear Motor Game.');
                   shared.moveStop = !shared.moveStop;
                 }
 
@@ -1056,11 +1056,11 @@ function draw() {
           blackoutCount--;
         }
 
-        if (keyIsPressed) { // 임시 조작키
-          shared.dodgeGame.player.x += 5;
-        } else if (mouseIsPressed) {
-          shared.dodgeGame.player.x -= 5;
-        }
+        // if (keyIsPressed) { // 임시 조작키
+        //   shared.dodgeGame.player.x += 5;
+        // } else if (mouseIsPressed) {
+        //   shared.dodgeGame.player.x -= 5;
+        // }
       } else { 
         background(0);
         fill(255);
@@ -1126,31 +1126,31 @@ function draw() {
 function keyPressed() {
 
   //맵 인터렉션 (추후 삭제)
-  if (keyCode === 81) {
-    activeTrigger = gameMap.checkTriggers(shared.slime);
-    switch (activeTrigger.message) {
-      case "spawn zone \n press Q to interact":
-        shared.moveStop = !shared.moveStop;
-        shared.zone = 0;
-        break;
-      case "zone 1":
-        shared.moveStop = !shared.moveStop;
-        shared.zone = 1;
-        break;
-      case "zone 2":
-        shared.moveStop = !shared.moveStop;
-        shared.zone = 2;
-        break;
-      case "zone 3":
-        shared.moveStop = !shared.moveStop;
-        shared.zone = 3;
-        break;
-      case "zone 4":
-        shared.moveStop = !shared.moveStop;
-        shared.zone = 4;
-        break;
-    }
-  }
+  // if (keyCode === 81) {
+  //   activeTrigger = gameMap.checkTriggers(shared.slime);
+  //   switch (activeTrigger.message) {
+  //     case "spawn zone \n press Q to interact":
+  //       shared.moveStop = !shared.moveStop;
+  //       shared.zone = 0;
+  //       break;
+  //     case "zone 1":
+  //       shared.moveStop = !shared.moveStop;
+  //       shared.zone = 1;
+  //       break;
+  //     case "zone 2":
+  //       shared.moveStop = !shared.moveStop;
+  //       shared.zone = 2;
+  //       break;
+  //     case "zone 3":
+  //       shared.moveStop = !shared.moveStop;
+  //       shared.zone = 3;
+  //       break;
+  //     case "zone 4":
+  //       shared.moveStop = !shared.moveStop;
+  //       shared.zone = 4;
+  //       break;
+  //   }
+  // }
 
   if (keyCode === 32) { // 스페이스바를 눌렀을 때
     switch (shared.mainStage) {
@@ -1171,11 +1171,11 @@ function keyPressed() {
         }
         break;
       case 3: // 메인페이지
-        if (shared.moveStop && shared.zone == 2) {
-          if (screwGame.selectedScrew) {
-            screwGame.selectedScrew.move();
-          }
-        }
+        // if (shared.moveStop && shared.zone == 2) {
+        //   if (screwGame.selectedScrew) {
+        //     screwGame.selectedScrew.move();
+        //   }
+        // }
         if (shared.moveStop && shared.zone == 4) {
           saveDegX = totalDegX;
           saveDegY = totalDegY;

@@ -77,7 +77,7 @@ function handleDeviceMotion(event) {
     }
   }
 
-  console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
+  // console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
 }
 
 // deviceorientation 이벤트 콜백 함수

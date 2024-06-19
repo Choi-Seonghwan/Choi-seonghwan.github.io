@@ -260,7 +260,7 @@ class ChatBot {
         this.isGameSuccess = true;
         this.gameOver();
         shared.progress++;
-        console.log(shared.progress);
+        // console.log(shared.progress);
       }
     }
   
