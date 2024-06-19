@@ -314,14 +314,19 @@ function setup() {
   gameMap = new GameMap(mapWidth, mapHeight, mapImg);
 
   chatGame = new ChatBot();
+  chatGame.inputBox.hide();
+  chatGame.initGame();
 
   screwGame = new ScrewGame();
   screwGame.setup();
   totalDeg = 0;
+  screwGame.resetGame();
 
   movingGame = new MovingGame();
+  movingGame.resetGame();
 
   shared.batteryChargeGame = new Motorgame();
+  shared.batteryChargeGame.reset();
 
   shared.dodgeGame = new ObstacleGame();
   dodgeBgY2 = -windowWidth * 2;
@@ -330,6 +335,9 @@ function setup() {
   startX = windowWidth / 2 - startW / 2;
   startY = windowHeight / 5 * 4 - startH / 2 - 20;
   distance = 0;
+  dodgeIntroScreens.showIntro1 = true;
+  dodgeIntroScreens.showIntro2 = false;
+  dodgeIntroScreens.gameStart = false;
 
   shared.zone = 0; // 지금 어느 미니게임 존에 있는가?
   shared.moveStop = false; // 미니게임이 열려있는가?
